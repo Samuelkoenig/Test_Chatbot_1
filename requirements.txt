@@ -1,0 +1,5 @@
+botbuilder-core
+botbuilder-ai
+botbuilder-dialogs
+botframework-connector
+aiohttp
