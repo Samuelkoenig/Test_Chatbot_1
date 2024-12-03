@@ -1,5 +1,5 @@
-botbuilder-core
-botbuilder-ai
-botbuilder-dialogs
-botframework-connector
-aiohttp
+aiohttp==3.8.5
+botbuilder-core==4.16.0
+botbuilder-schema==4.16.0
+botframework-connector==4.16.0
+botbuilder-ai==4.16.0

@@ -1,6 +1,7 @@
 import sys
 import traceback
 from datetime import datetime
+import logging
 
 from aiohttp import web
 from aiohttp.web import Request, Response, json_response
@@ -16,6 +17,7 @@ from bot.bot import Bot
 from config import DefaultConfig
 
 config = DefaultConfig()
+logging.basicConfig(level=logging.INFO)
 
 # Create adapter.
 settings = BotFrameworkAdapterSettings(config.app_id, config.app_password)
@@ -24,6 +26,7 @@ adapter = BotFrameworkAdapter(settings)
 
 # Catch-all for errors.
 async def on_error(context: TurnContext, error: Exception):
+    logging.error(f"Unhandled error: {error}")
     print(f"\n [on_turn_error] unhandled error: {error}", file=sys.stderr)
     traceback.print_exc()
     await context.send_activity("The bot encountered an error or bug.")
@@ -69,6 +72,6 @@ app.router.add_post("/api/messages", messages)
 
 if __name__ == "__main__":
     try:
-        web.run_app(app, host="localhost", port=config.port)
+        web.run_app(app, host="0.0.0.0", port=config.port)
     except Exception as error:
         raise error
