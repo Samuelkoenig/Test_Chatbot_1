@@ -1,3 +1,4 @@
+# Imports
 import sys
 import traceback
 from datetime import datetime
@@ -16,15 +17,17 @@ from botbuilder.schema import Activity, ActivityTypes
 from bot.bot import Bot
 from config import DefaultConfig
 
-config = DefaultConfig()
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Create adapter.
+config = DefaultConfig()
+
+# Create adapter
 settings = BotFrameworkAdapterSettings(config.app_id, config.app_password)
 adapter = BotFrameworkAdapter(settings)
 
 
-# Catch-all for errors.
+# Catch-all for errors
 async def on_error(context: TurnContext, error: Exception):
     logging.error(f"Unhandled error: {error}")
     print(f"\n [on_turn_error] unhandled error: {error}", file=sys.stderr)
@@ -74,4 +77,5 @@ if __name__ == "__main__":
     try:
         web.run_app(app, host="0.0.0.0", port=config.port)
     except Exception as error:
+        logger.error(f"An error occurred while starting the app: {error}")
         raise error

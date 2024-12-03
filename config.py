@@ -1,5 +1,7 @@
+# Imports
 import os
 
+# Defualt config class
 class DefaultConfig:
     """ Bot Configuration """
 
