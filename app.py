@@ -3,7 +3,6 @@ import sys
 import traceback
 from datetime import datetime
 import logging
-import aiohttp_cors
 
 from aiohttp import web
 from aiohttp.web import Request, Response, json_response
@@ -72,9 +71,7 @@ async def messages(req: Request) -> Response:
 
 
 app = web.Application(middlewares=[aiohttp_error_middleware])
-cors = aiohttp_cors.setup(app)
-cors.add(app.router.add_post("/api/messages", messages))
-#app.router.add_post("/api/messages", messages)
+app.router.add_post("/api/messages", messages)
 
 if __name__ == "__main__":
     try:
