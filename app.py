@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 config = DefaultConfig()
 
 # Create adapter
-settings = BotFrameworkAdapterSettings(config.app_id, config.app_password)
+settings = BotFrameworkAdapterSettings(config.APP_ID, config.APP_PASSWORD)
 adapter = BotFrameworkAdapter(settings)
 
 
@@ -75,7 +75,7 @@ app.router.add_post("/api/messages", messages)
 
 if __name__ == "__main__":
     try:
-        web.run_app(app, host="0.0.0.0", port=config.port)
+        web.run_app(app, host="0.0.0.0", port=config.PORT)
     except Exception as error:
         logger.error(f"An error occurred while starting the app: {error}")
         raise error
