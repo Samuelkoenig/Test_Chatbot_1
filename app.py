@@ -3,6 +3,7 @@ import sys
 import traceback
 from datetime import datetime
 import logging
+import aiohttp_cors
 
 from aiohttp import web
 from aiohttp.web import Request, Response, json_response
@@ -17,7 +18,7 @@ from botbuilder.schema import Activity, ActivityTypes
 from bot.bot import Bot
 from config import DefaultConfig
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 config = DefaultConfig()
@@ -71,7 +72,9 @@ async def messages(req: Request) -> Response:
 
 
 app = web.Application(middlewares=[aiohttp_error_middleware])
-app.router.add_post("/api/messages", messages)
+cors = aiohttp_cors.setup(app)
+cors.add(app.router.add_post("/api/messages", messages))
+#app.router.add_post("/api/messages", messages)
 
 if __name__ == "__main__":
     try:

@@ -1,4 +1,5 @@
 aiohttp==3.9.5
+aiohttp-cors==0.7.0
 botbuilder-core==4.16.0
 botbuilder-schema==4.16.0
 botframework-connector==4.16.0
