@@ -46,9 +46,12 @@ async def on_error(context: TurnContext, error: Exception):
 
 adapter.on_turn_error = on_error
 
-# Create the Bot
-bot = Bot(ConversationState(MemoryStorage()))
+# Create global ConversationState and MemoryStorage
+memory = MemoryStorage()
+conversation_state = ConversationState(memory)
 
+# Create the Bot
+bot = Bot(conversation_state)
 
 # Listen for incoming requests on /api/messages
 async def messages(req: Request) -> Response:
