@@ -21,6 +21,25 @@ class Bot(ActivityHandler):
         self.welcome_state_accessor = self.conversation_state.create_property("WelcomeState")
         self.treatment_state_accessor = self.conversation_state.create_property("TreatmentGroup")
     
+    async def on_conversation_update_activity(self, turn_context: TurnContext):
+        """
+        Handle conversationUpdate activities. This will be called before on_members_added_activity.
+        Used to store the treatmentGroup if provided.
+
+        Args: 
+            turn_context (TurnContext): The information about the current activity.
+        """
+        
+        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        treatment_group = channel_data.get("treatmentGroup", None)
+
+        # If treatmentGroup is provided, store it. If not, do nothing here.
+        if treatment_group is not None:
+            await self.treatment_state_accessor.set(turn_context, treatment_group)
+            await self.conversation_state.save_changes(turn_context)
+
+        return await super().on_conversation_update_activity(turn_context)
+    
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
         """
         Initializes a new conversation. Sends the welcome message and switches the welcome_state variable. 
@@ -35,11 +54,9 @@ class Bot(ActivityHandler):
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
 
         # Receive and specify treatment state
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
-        treatment_group = channel_data.get("treatment_group", None)
+        treatment_group = await self.treatment_state_accessor.get(turn_context, None)
         if treatment_group is None:
             treatment_group = 1
-        await self.treatment_state_accessor.set(turn_context, treatment_group)
 
         # Generate initial welcome message
         for member_added in members_added:
@@ -65,7 +82,7 @@ class Bot(ActivityHandler):
         if treatment_group == 1: 
             await turn_context.send_activity(f"Danke für deine Nachricht. Du hast folgendes gesagt: '{ user_text }'")
         else:
-            await turn_context.send_activity(f"Du sagtest '{ user_text }'")
+            await turn_context.send_activity(f"Du hast gesagt: '{ user_text }'")
 
         # Save new conversation state
         await self.conversation_state.save_changes(turn_context)
