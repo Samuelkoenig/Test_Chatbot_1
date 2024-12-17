@@ -35,6 +35,10 @@ class Bot(ActivityHandler):
 
         # If treatmentGroup is provided, store it. If not, do nothing here.
         if treatment_group is not None:
+            try:
+                treatment_group = int(treatment_group)
+            except ValueError:
+                treatment_group = 1
             await self.treatment_state_accessor.set(turn_context, treatment_group)
             await self.conversation_state.save_changes(turn_context)
 
