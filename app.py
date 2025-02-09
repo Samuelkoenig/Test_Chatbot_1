@@ -1,5 +1,7 @@
 # Imports
 import sys
+import os
+import json
 import traceback
 from datetime import datetime
 import logging
@@ -13,8 +15,8 @@ from botbuilder.schema import Activity, ActivityTypes
 from bot.bot import Bot
 from config import DefaultConfig
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.DEBUG)  //TODO: Zum debuggen entkommentieren
+#logger = logging.getLogger(__name__)  //TODO: Zum debuggen entkommentieren
 
 config = DefaultConfig()
 
@@ -22,6 +24,14 @@ config = DefaultConfig()
 settings = BotFrameworkAdapterSettings(config.APP_ID, config.APP_PASSWORD)
 adapter = BotFrameworkAdapter(settings)
 
+# Load botsettings
+botsettings_file_path = os.path.join(os.path.dirname(__file__), "botsettings.json")
+try:
+    with open(botsettings_file_path, "r") as f:
+        botsettings_data = json.load(f)
+    treatment_fallback = int(botsettings_data.get("treatment_group_fallback", 1))
+except ValueError or json.decoder.JSONDecodeError:
+    treatment_fallback = 1
 
 # Catch-all for errors
 async def on_error(context: TurnContext, error: Exception):
@@ -51,7 +61,7 @@ memory = MemoryStorage()
 conversation_state = ConversationState(memory)
 
 # Create the Bot
-bot = Bot(conversation_state)
+bot = Bot(conversation_state, treatment_fallback)
 
 # Listen for incoming requests on /api/messages
 async def messages(req: Request) -> Response:
