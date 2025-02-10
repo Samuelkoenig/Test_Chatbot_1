@@ -1,0 +1,21 @@
+{
+  "1": {
+    "message": "Willkommen bei Salando! Ich bin Bob, ihr virtueller Assistent. Womit kann ich Ihnen helfen?"
+  },
+
+  "3": {
+    "message": "Verstanden. Können Sie mir bitte ihre Bestellnummer und den fehlenden Arkitel mitteilen?"
+  },
+
+  "5": {
+    "message": "Ich habe Ihre Bestellung überprüft und festgestellt, dass beim Verpacken ein Fehler passiert ist. Da wir die Armbanduhr noch auf Lager haben, können wir sie versandkostenfrei nachliefern. Alternativ können wir Ihnen den zuviel gezahlten Betrag vollständig zurückerstatten. Welche Option bevorzugen Sie?"
+  },
+
+  "7": {
+    "message": "Alles klar, ich habe eine Expresslieferung des fehlenden Artikels veranlasst. Als Entschuldigung für die Unannehmlichkeiten habe ich Ihrem Kundenkonto einen Betrag in Höhe von 10 Euro gutgeschrieben. Haben Sie noch weitere Fragen oder Wünsche?"
+  },
+
+  "9": {
+    "message": "Ich habe Ihre Anfrage bearbeitet. Bei weiteren Anliegen und Fragen können Sie mich jederzeit erneut kontaktieren. Auf Wiedersehen!"
+  }
+}
