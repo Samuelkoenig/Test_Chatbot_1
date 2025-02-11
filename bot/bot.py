@@ -83,7 +83,21 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        await self.on_conversation_update_activity(turn_context)
+        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        existing_treatment_value = await self.treatment_state_accessor.get(turn_context, None)
+        print("Existing treatment value: ", existing_treatment_value)
+        if existing_treatment_value == None: 
+            treatment_group = channel_data.get("treatmentGroup", None)
+            if treatment_group is None:
+                treatment_group = self.treatment_fallback
+            else:
+                try:
+                    treatment_group = int(treatment_group)
+                except ValueError:
+                    treatment_group = self.treatment_fallback
+            await self.treatment_state_accessor.set(turn_context, treatment_group)
+            print("Treatment group: ", treatment_group)
+            await self.conversation_state.save_changes(turn_context)
 
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
