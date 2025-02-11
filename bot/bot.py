@@ -36,9 +36,11 @@ class Bot(ActivityHandler):
 
         # Receive and specify treatment state
         channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
-        treatment_group = int(channel_data.get("treatmentGroup", None))
+        treatment_group = channel_data.get("treatmentGroup", None)
         if treatment_group is None:
             treatment_group = 1
+        else:
+            treatment_group = int(treatment_group)
         await self.treatment_state_accessor.set(turn_context, treatment_group)
 
         # Generate initial welcome message
