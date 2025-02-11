@@ -83,11 +83,14 @@ class Bot(ActivityHandler):
 
         # If treatmentGroup is provided, store it. If not, do nothing here.
         if treatment_group is None:
+            print("Test 1")
             treatment_group = self.treatment_fallback
         else:
             try:
+                print("Test 2")
                 treatment_group = int(treatment_group)
             except ValueError:
+                print("Test 3")
                 treatment_group = self.treatment_fallback
         await self.treatment_state_accessor.set(turn_context, treatment_group)
         await self.conversation_state.save_changes(turn_context)
