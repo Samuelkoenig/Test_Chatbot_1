@@ -39,7 +39,7 @@ class Bot(ActivityHandler):
 
         self.conversation_logic = DialogueLogic()
     
-    #async def on_conversation_update_activity(self, turn_context: TurnContext):
+    async def on_conversation_update_activity(self, turn_context: TurnContext):
         """
         Handle conversationUpdate activities. 
         - This function is called before on_members_added_activity.
@@ -48,36 +48,7 @@ class Bot(ActivityHandler):
         Args: 
             turn_context (TurnContext): The information about the current activity.
         """
-        """
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
-        treatment_group = channel_data.get("treatmentGroup", None)
-
-        # If treatmentGroup is provided, store it. If not, do nothing here.
-        if treatment_group is None:
-            treatment_group = self.treatment_fallback
-        else:
-            try:
-                treatment_group = int(treatment_group)
-            except ValueError:
-                treatment_group = self.treatment_fallback
-        await self.treatment_state_accessor.set(turn_context, treatment_group)
-        await self.conversation_state.save_changes(turn_context)
-
-        return await super().on_conversation_update_activity(turn_context)"""
-    
-    async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
-        """
-        Initializes a new conversation. 
-        - Sends the welcome message using the DialogueLogic class instance. 
-        - Updates the conversation history. 
-        - Updates the dialogue state. 
-        - Switches the welcome_state variable. 
-
-        Args: 
-            members_added (ChannelAccount): The information about the user account. 
-            turn_context (TurnContext): The information about the current activity.
-        """
-
+        
         channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
 
@@ -96,6 +67,21 @@ class Bot(ActivityHandler):
                 treatment_group = self.treatment_fallback
         await self.treatment_state_accessor.set(turn_context, treatment_group)
         await self.conversation_state.save_changes(turn_context)
+
+        return await super().on_conversation_update_activity(turn_context)
+    
+    async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
+        """
+        Initializes a new conversation. 
+        - Sends the welcome message using the DialogueLogic class instance. 
+        - Updates the conversation history. 
+        - Updates the dialogue state. 
+        - Switches the welcome_state variable. 
+
+        Args: 
+            members_added (ChannelAccount): The information about the user account. 
+            turn_context (TurnContext): The information about the current activity.
+        """
 
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
