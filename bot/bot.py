@@ -39,7 +39,7 @@ class Bot(ActivityHandler):
 
         self.conversation_logic = DialogueLogic()
     
-    #async def on_conversation_update_activity(self, turn_context: TurnContext):
+    async def on_conversation_update_activity(self, turn_context: TurnContext):
         """
         Handle conversationUpdate activities. 
         - This function is called before on_members_added_activity.
@@ -49,7 +49,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
         
-        """channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
 
         # If the value in self.treatment_state_accessor is None or not existant, 
         # get the treatmentGroup value from channel_data. 
@@ -68,7 +68,7 @@ class Bot(ActivityHandler):
             print("Treatment group: ", treatment_group)
 
         await self.conversation_state.save_changes(turn_context)
-        return await super().on_conversation_update_activity(turn_context)"""
+        return await super().on_conversation_update_activity(turn_context)
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
         """
