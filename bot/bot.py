@@ -83,6 +83,8 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
+        await self.on_conversation_update_activity(turn_context)
+
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
 
