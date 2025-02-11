@@ -141,6 +141,15 @@ class Bot(ActivityHandler):
 
         # Retrieve user message and send response
         treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
+        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        treatment_group = channel_data.get("treatmentGroup", None)
+        if treatment_group is None:
+            treatment_group = self.treatment_fallback
+        else:
+            try:
+                treatment_group = int(treatment_group)
+            except ValueError:
+                treatment_group = self.treatment_fallback
         user_text = turn_context.activity.text
 
         conversation_history = await self.history_state_accessor.get(turn_context)
