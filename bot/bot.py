@@ -63,7 +63,7 @@ class Bot(ActivityHandler):
         await self.treatment_state_accessor.set(turn_context, treatment_group)
         await self.conversation_state.save_changes(turn_context)
 
-        return await super().on_conversation_update_activity(turn_context)
+        #return await super().on_conversation_update_activity(turn_context)
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
         """
@@ -80,6 +80,8 @@ class Bot(ActivityHandler):
 
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
+
+        await self.on_conversation_update_activity(turn_context)
 
         # Receive and specify treatment state
         treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
