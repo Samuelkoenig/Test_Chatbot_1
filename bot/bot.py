@@ -81,6 +81,8 @@ class Bot(ActivityHandler):
         channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
 
+        print(treatment_group)
+
         # If treatmentGroup is provided, store it. If not, do nothing here.
         if treatment_group is None:
             print("Test 1")
