@@ -35,13 +35,14 @@ class Bot(ActivityHandler):
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
 
         # Receive and specify treatment state
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
-        treatment_group = channel_data.get("treatmentGroup", None)
-        if treatment_group is None:
-            treatment_group = 1
-        else:
-            treatment_group = int(treatment_group)
-        await self.treatment_state_accessor.set(turn_context, treatment_group)
+        if (await self.treatment_state_accessor.get(turn_context, None) == None):
+            channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+            treatment_group = channel_data.get("treatmentGroup", None)
+            if treatment_group is None:
+                treatment_group = 1
+            else:
+                treatment_group = int(treatment_group)
+            await self.treatment_state_accessor.set(turn_context, treatment_group)
 
         # Generate initial welcome message
         for member_added in members_added:
