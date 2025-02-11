@@ -54,6 +54,7 @@ class Bot(ActivityHandler):
         # If the value in self.treatment_state_accessor is None or not existant, 
         # get the treatmentGroup value from channel_data. 
         existing_treatment_value = await self.treatment_state_accessor.get(turn_context, None)
+        print("Existing treatment value: ", existing_treatment_value)
         if existing_treatment_value == None: 
             treatment_group = channel_data.get("treatmentGroup", None)
             if treatment_group is None:
@@ -64,8 +65,9 @@ class Bot(ActivityHandler):
                 except ValueError:
                     treatment_group = self.treatment_fallback
             await self.treatment_state_accessor.set(turn_context, treatment_group)
-            await self.conversation_state.save_changes(turn_context)
+            print("Treatment group: ", treatment_group)
 
+        await self.conversation_state.save_changes(turn_context)
         return await super().on_conversation_update_activity(turn_context)
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
