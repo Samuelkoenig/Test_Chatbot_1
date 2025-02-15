@@ -53,9 +53,9 @@ class Bot(ActivityHandler):
 
         # If the value in self.treatment_state_accessor is None or not existant, 
         # get the treatmentGroup value from channel_data. 
-        existing_treatment_value = await self.treatment_state_accessor.get(turn_context, None)
-        print("Existing treatment value: ", existing_treatment_value)
-        if existing_treatment_value == None: 
+        treatment_group = await self.treatment_state_accessor.get(turn_context, None)
+        print("Existing treatment value: ", treatment_group)
+        if treatment_group == None: 
             treatment_group = channel_data.get("treatmentGroup", None)
             if treatment_group is None:
                 treatment_group = self.treatment_fallback
@@ -69,6 +69,7 @@ class Bot(ActivityHandler):
 
         await self.conversation_state.save_changes(turn_context)
 
+        return treatment_group
     
     async def on_conversation_update_activity(self, turn_context: TurnContext):
         """
@@ -137,10 +138,10 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
-        await self.set_treatment_group(turn_context)
+        #treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
+        treatment_group = await self.set_treatment_group(turn_context)
         
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        """channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
         if treatment_group is None:
             treatment_group = self.treatment_fallback
@@ -148,7 +149,7 @@ class Bot(ActivityHandler):
             try:
                 treatment_group = int(treatment_group)
             except ValueError:
-                treatment_group = self.treatment_fallback
+                treatment_group = self.treatment_fallback"""
 
         user_text = turn_context.activity.text
         conversation_history = await self.history_state_accessor.get(turn_context)
