@@ -38,17 +38,17 @@ class Bot(ActivityHandler):
         self.dialogue_state_accessor = self.conversation_state.create_property("DialogueState")
 
         self.conversation_logic = DialogueLogic()
-    
-    async def on_conversation_update_activity(self, turn_context: TurnContext):
+
+    async def set_treatment_group(self, turn_context: TurnContext):
         """
-        Handle conversationUpdate activities. 
-        - This function is called before on_members_added_activity.
-        - Used to store the treatmentGroup if provided, otherwise uses the treatment_fallback value.
+        Stores the treatment group value in the conversation state. 
+        - Stores the treatmentGroup if provided in channel_data, otherwise uses the treatment_fallback value.
 
         Args: 
             turn_context (TurnContext): The information about the current activity.
         """
-        
+
+        # Receive channel data
         channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
 
         # If the value in self.treatment_state_accessor is None or not existant, 
@@ -68,6 +68,20 @@ class Bot(ActivityHandler):
             print("Treatment group: ", treatment_group)
 
         await self.conversation_state.save_changes(turn_context)
+
+    
+    async def on_conversation_update_activity(self, turn_context: TurnContext):
+        """
+        Handle conversationUpdate activities. 
+        - This function is called before on_members_added_activity.
+        - Stores the treatmentGroup if provided, otherwise uses the treatment_fallback value.
+
+        Args: 
+            turn_context (TurnContext): The information about the current activity.
+        """
+        
+        await self.set_treatment_group(turn_context)
+
         return await super().on_conversation_update_activity(turn_context)
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
@@ -83,23 +97,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        # If the value in self.treatment_state_accessor is None or not existant, 
-        # get the treatmentGroup value from channel_data. 
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
-        existing_treatment_value = await self.treatment_state_accessor.get(turn_context, None)
-        print("Existing treatment value: ", existing_treatment_value)
-        if existing_treatment_value == None: 
-            treatment_group = channel_data.get("treatmentGroup", None)
-            if treatment_group is None:
-                treatment_group = self.treatment_fallback
-            else:
-                try:
-                    treatment_group = int(treatment_group)
-                except ValueError:
-                    treatment_group = self.treatment_fallback
-            await self.treatment_state_accessor.set(turn_context, treatment_group)
-            print("Treatment group: ", treatment_group)
-            await self.conversation_state.save_changes(turn_context)
+        await self.set_treatment_group(turn_context)
 
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
@@ -139,19 +137,10 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        # Retrieve user message and send response
-        treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
-        treatment_group = channel_data.get("treatmentGroup", None)
-        if treatment_group is None:
-            treatment_group = self.treatment_fallback
-        else:
-            try:
-                treatment_group = int(treatment_group)
-            except ValueError:
-                treatment_group = self.treatment_fallback
+        await self.set_treatment_group(turn_context)
+        
         user_text = turn_context.activity.text
-
+        treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
         conversation_history = await self.history_state_accessor.get(turn_context)
         dialogue_states = await self.dialogue_state_accessor.get(turn_context)
         if conversation_history is None:
@@ -203,7 +192,7 @@ class DialogueLogic:
         with open(dialogue_states_file_path, "r", encoding="utf-8") as f:
             self.dialogue_states = json.load(f)
 
-    def get_welcome_message(self, treatment_group: int, dialogue_states_history: list) -> (str, list):
+    def get_welcome_message(self, treatment_group: int, dialogue_states_history: list) -> tuple[str, list]:
         """
         Returns the welcome message based on the treatment_group value. 
         Updates the dialogue_states_history.
@@ -222,7 +211,7 @@ class DialogueLogic:
 
         return bot_welcome_message, new_dialogue_states_history
 
-    def get_bot_message(self, treatment_group: int, conversation_history: list, dialogue_states_history: list, user_text: str) -> (str, list):
+    def get_bot_message(self, treatment_group: int, conversation_history: list, dialogue_states_history: list, user_text: str) -> tuple[str, list]:
         """
         Returns a bot response to a user message based on the treatment group value and the conversation history. 
 
