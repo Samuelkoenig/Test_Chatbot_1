@@ -68,8 +68,6 @@ class Bot(ActivityHandler):
             print("Treatment group: ", treatment_group)
 
         await self.conversation_state.save_changes(turn_context)
-
-        return treatment_group
     
     async def on_conversation_update_activity(self, turn_context: TurnContext):
         """
@@ -98,7 +96,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        await self.set_treatment_group(turn_context)
+        #await self.set_treatment_group(turn_context)
 
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
@@ -115,6 +113,7 @@ class Bot(ActivityHandler):
                     conversation_history = []
                 if dialogue_states is None:
                     dialogue_states = []
+                await self.set_treatment_group(turn_context)
                 
                 welcome_text, new_dialogue_states = self.conversation_logic.get_welcome_message(
                     treatment_group,
@@ -138,7 +137,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        await self.set_treatment_group(turn_context)
+        #await self.set_treatment_group(turn_context)
         treatment_group = await self.treatment_state_accessor.get(turn_context)
         """treatment_group = await self.set_treatment_group(turn_context)
         
