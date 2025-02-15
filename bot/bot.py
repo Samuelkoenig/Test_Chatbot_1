@@ -138,6 +138,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
+        await self.set_treatment_group(turn_context)
         treatment_group = await self.treatment_state_accessor.get(turn_context)
         """treatment_group = await self.set_treatment_group(turn_context)
         
