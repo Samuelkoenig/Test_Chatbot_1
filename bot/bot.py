@@ -96,7 +96,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        #await self.set_treatment_group(turn_context)
+        await self.set_treatment_group(turn_context)
 
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
@@ -113,7 +113,6 @@ class Bot(ActivityHandler):
                     conversation_history = []
                 if dialogue_states is None:
                     dialogue_states = []
-                await self.set_treatment_group(turn_context)
                 
                 welcome_text, new_dialogue_states = self.conversation_logic.get_welcome_message(
                     treatment_group,
@@ -137,9 +136,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        #await self.set_treatment_group(turn_context)
-        treatment_group = await self.treatment_state_accessor.get(turn_context)
-        """treatment_group = await self.set_treatment_group(turn_context)
+        treatment_group = await self.set_treatment_group(turn_context)
         
         channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
@@ -149,7 +146,7 @@ class Bot(ActivityHandler):
             try:
                 treatment_group = int(treatment_group)
             except ValueError:
-                treatment_group = self.treatment_fallback"""
+                treatment_group = self.treatment_fallback
 
         user_text = turn_context.activity.text
         conversation_history = await self.history_state_accessor.get(turn_context)
