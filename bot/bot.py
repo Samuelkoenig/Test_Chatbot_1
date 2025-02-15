@@ -165,7 +165,7 @@ class Bot(ActivityHandler):
 
         conversation_history.append(("user", user_text))
         conversation_history.append(("bot", bot_response))
-        await turn_context.send_activity(bot_response + str(treatment_group))
+        await turn_context.send_activity(bot_response)
 
         await self.dialogue_state_accessor.set(turn_context, new_dialogue_states)
         await self.history_state_accessor.set(turn_context, conversation_history)
