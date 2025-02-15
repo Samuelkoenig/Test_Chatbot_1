@@ -138,10 +138,10 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        #treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
-        treatment_group = await self.set_treatment_group(turn_context)
+        treatment_group = await self.treatment_state_accessor.get(turn_context)
+        """treatment_group = await self.set_treatment_group(turn_context)
         
-        """channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
         if treatment_group is None:
             treatment_group = self.treatment_fallback
@@ -168,7 +168,7 @@ class Bot(ActivityHandler):
 
         conversation_history.append(("user", user_text))
         conversation_history.append(("bot", bot_response))
-        await turn_context.send_activity(bot_response)
+        await turn_context.send_activity(bot_response + treatment_group)
 
         await self.dialogue_state_accessor.set(turn_context, new_dialogue_states)
         await self.history_state_accessor.set(turn_context, conversation_history)
