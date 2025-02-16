@@ -81,7 +81,7 @@ class Bot(ActivityHandler):
         
         await self.set_treatment_group(turn_context)
 
-        return await super().on_conversation_update_activity(turn_context)
+        #return await super().on_conversation_update_activity(turn_context)
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
         """
@@ -138,7 +138,7 @@ class Bot(ActivityHandler):
 
         treatment_group = await self.set_treatment_group(turn_context)
         
-        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        """channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
         if treatment_group is None:
             treatment_group = self.treatment_fallback
@@ -146,7 +146,7 @@ class Bot(ActivityHandler):
             try:
                 treatment_group = int(treatment_group)
             except ValueError:
-                treatment_group = self.treatment_fallback
+                treatment_group = self.treatment_fallback"""
 
         user_text = turn_context.activity.text
         conversation_history = await self.history_state_accessor.get(turn_context)
