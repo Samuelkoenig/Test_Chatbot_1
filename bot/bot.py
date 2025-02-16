@@ -69,7 +69,7 @@ class Bot(ActivityHandler):
 
         await self.conversation_state.save_changes(turn_context)
     
-    #async def on_conversation_update_activity(self, turn_context: TurnContext):
+    async def on_conversation_update_activity(self, turn_context: TurnContext):
         """
         Handle conversationUpdate activities. 
         - This function is called before on_members_added_activity.
@@ -79,9 +79,9 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
         
-        #await self.set_treatment_group(turn_context)
+        await self.set_treatment_group(turn_context)
 
-        #return await super().on_conversation_update_activity(turn_context)
+        return await super().on_conversation_update_activity(turn_context)
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
         """
@@ -137,9 +137,8 @@ class Bot(ActivityHandler):
         """
 
         treatment_group = await self.set_treatment_group(turn_context)
-        treatment_group = await self.treatment_state_accessor.get(turn_context, None)
         
-        """channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
+        channel_data = turn_context.activity.channel_data if turn_context.activity.channel_data else {}
         treatment_group = channel_data.get("treatmentGroup", None)
         if treatment_group is None:
             treatment_group = self.treatment_fallback
@@ -147,7 +146,7 @@ class Bot(ActivityHandler):
             try:
                 treatment_group = int(treatment_group)
             except ValueError:
-                treatment_group = self.treatment_fallback"""
+                treatment_group = self.treatment_fallback
 
         user_text = turn_context.activity.text
         conversation_history = await self.history_state_accessor.get(turn_context)
