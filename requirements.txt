@@ -3,3 +3,5 @@ botbuilder-core==4.16.0
 botbuilder-schema==4.16.0
 botframework-connector==4.16.0
 botbuilder-ai==4.16.0
+openai==1.61.1
+python-dotenv==1.0.1
