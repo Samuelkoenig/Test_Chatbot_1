@@ -44,7 +44,6 @@ class Bot(ActivityHandler):
                 treatment_group = int(treatment_group)
             except ValueError:
                 treatment_group = 1
-        if self.treatment_state_accessor.get(turn_context, None) != None:
             await self.treatment_state_accessor.set(turn_context, treatment_group)
 
         # Generate initial welcome message
