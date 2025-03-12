@@ -1,6 +1,7 @@
 # Imports
 import sys
 import os
+from dotenv import load_dotenv
 import json
 import traceback
 from datetime import datetime
@@ -11,6 +12,7 @@ from aiohttp.web import Request, Response, json_response
 from botbuilder.core import (BotFrameworkAdapterSettings, TurnContext, BotFrameworkAdapter, ConversationState, MemoryStorage)
 from botbuilder.core.integration import aiohttp_error_middleware
 from botbuilder.schema import Activity, ActivityTypes
+from botbuilder.azure import CosmosDbPartitionedStorage, CosmosDbPartitionedConfig
 
 from bot.bot import Bot
 from config import DefaultConfig
@@ -19,6 +21,9 @@ from config import DefaultConfig
 #logger = logging.getLogger(__name__)  //TODO: Zum debuggen entkommentieren
 
 config = DefaultConfig()
+
+# Load environment variables
+load_dotenv()
 
 # Create adapter
 settings = BotFrameworkAdapterSettings(config.APP_ID, config.APP_PASSWORD)
@@ -30,8 +35,11 @@ try:
     with open(botsettings_file_path, "r") as f:
         botsettings_data = json.load(f)
     treatment_fallback = int(botsettings_data.get("treatment_group_fallback", 1))
-except ValueError or json.decoder.JSONDecodeError:
+    use_cosmos_db_storage = bool(botsettings_data.get("use_cosmos_db_storage", False))
+except (ValueError, json.decoder.JSONDecodeError):
     treatment_fallback = 1
+    use_cosmos_db_storage = False
+print("use_cosmos_db_storage: " + str(use_cosmos_db_storage))
 
 # Catch-all for errors
 async def on_error(context: TurnContext, error: Exception):
@@ -56,9 +64,24 @@ async def on_error(context: TurnContext, error: Exception):
 
 adapter.on_turn_error = on_error
 
-# Create global ConversationState and MemoryStorage
-memory = MemoryStorage()
-conversation_state = ConversationState(memory)
+# Create global ConversationState and Storage
+if use_cosmos_db_storage == True: 
+    cosmos_db_endpoint = os.getenv("COSMOS_DB_ENDPOINT")
+    auth_key = os.getenv("COSMOS_DB_AUTH_KEY")
+    database_id = os.getenv("COSMOS_DB_DATABASE_ID")
+    container_id = os.getenv("COSMOS_DB_CONTAINER_ID")
+    cosmos_config = CosmosDbPartitionedConfig(
+        cosmos_db_endpoint=cosmos_db_endpoint,
+        auth_key=auth_key,
+        database_id=database_id,
+        container_id=container_id,
+        container_throughput=None    # to make it compatible with the serverless cosmosdb. 
+    )
+    storage = CosmosDbPartitionedStorage(cosmos_config)
+    conversation_state = ConversationState(storage)
+else:
+    memory = MemoryStorage()
+    conversation_state = ConversationState(memory)
 
 # Create the Bot
 bot = Bot(conversation_state, treatment_fallback)
@@ -86,5 +109,5 @@ if __name__ == "__main__":
     try:
         web.run_app(app, host="0.0.0.0", port=config.PORT)
     except Exception as error:
-        logger.error(f"An error occurred while starting the app: {error}")
+        #logger.error(f"An error occurred while starting the app: {error}")
         raise error
