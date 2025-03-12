@@ -18,10 +18,11 @@ class Bot(ActivityHandler):
         """
         Constructor of the Bot class. 
         - Specifies the conversation state variables of a bot instance: 
-            - welcome_state: Specifies whether a bot instance is in the welcome state.
-            - treatment_state: Specifies whether a bot instance should be treated as treatment or control group.
-            - history_state: The conversation history. 
-            - dialogue_state: The current state of the dialogue. 
+            - welcome_state_accessor: Specifies whether a bot instance is in the welcome state.
+            - treatment_state_accessor: Specifies whether a bot instance should be treated as treatment or control group.
+            - conversation_history_accessor: The conversation history. 
+            - dialogue_state_history_accessor: The dialogue state history. 
+            - slot_filling_accessor: The slot filling information. 
         - Initializes an instance of the DialogueLogic class to generate the bot's messages. 
         
         Args: 
@@ -35,8 +36,9 @@ class Bot(ActivityHandler):
         # Specify conversation state variables
         self.welcome_state_accessor = self.conversation_state.create_property("WelcomeState")
         self.treatment_state_accessor = self.conversation_state.create_property("TreatmentGroup")
-        self.history_state_accessor = self.conversation_state.create_property("HistoryState")
-        self.dialogue_state_accessor = self.conversation_state.create_property("DialogueState")
+        self.conversation_history_accessor = self.conversation_state.create_property("ConversationHistory")
+        self.dialogue_state_history_accessor = self.conversation_state.create_property("DialogueStateHistory")
+        self.slot_filling_accessor = self.conversation_state.create_property("SlotFilling")
 
         self.conversation_logic = DialogueLogic()
 
@@ -108,22 +110,22 @@ class Bot(ActivityHandler):
         # Generate initial welcome message
         for member_added in members_added:
             if member_added.id != turn_context.activity.recipient.id and not welcome_sent:
-                conversation_history = await self.history_state_accessor.get(turn_context)
-                dialogue_states = await self.dialogue_state_accessor.get(turn_context)
+                conversation_history = await self.conversation_history_accessor.get(turn_context)
+                dialogue_state_history = await self.dialogue_state_history_accessor.get(turn_context)
                 if conversation_history is None:
                     conversation_history = []
-                if dialogue_states is None:
-                    dialogue_states = []
+                if dialogue_state_history is None:
+                    dialogue_state_history = []
                 
-                welcome_text, new_dialogue_states = self.conversation_logic.get_welcome_message(
+                welcome_text, new_dialogue_state_history = self.conversation_logic.get_welcome_message(
                     treatment_group,
-                    dialogue_states
+                    dialogue_state_history
                 )
                 conversation_history.append(("bot", welcome_text))
                 await turn_context.send_activity(welcome_text)
                 
-                await self.dialogue_state_accessor.set(turn_context, new_dialogue_states)
-                await self.history_state_accessor.set(turn_context, conversation_history)
+                await self.dialogue_state_history_accessor.set(turn_context, new_dialogue_state_history)
+                await self.conversation_history_accessor.set(turn_context, conversation_history)
                 await self.welcome_state_accessor.set(turn_context, True)
                 await self.conversation_state.save_changes(turn_context)
 
@@ -140,17 +142,17 @@ class Bot(ActivityHandler):
         treatment_group = await self.get_treatment_state(turn_context)
 
         user_text = turn_context.activity.text
-        conversation_history = await self.history_state_accessor.get(turn_context)
-        dialogue_states = await self.dialogue_state_accessor.get(turn_context)
+        conversation_history = await self.conversation_history_accessor.get(turn_context)
+        dialogue_state_history = await self.dialogue_state_history_accessor.get(turn_context)
         if conversation_history is None:
             conversation_history = []
-        if dialogue_states is None:
-            dialogue_states = []
+        if dialogue_state_history is None:
+            dialogue_state_history = []
 
-        bot_response, new_dialogue_states = self.conversation_logic.get_bot_message(
+        bot_response, new_dialogue_state_history = self.conversation_logic.get_bot_message(
             treatment_group,
             conversation_history,
-            dialogue_states,
+            dialogue_state_history,
             user_text
         )
 
@@ -158,8 +160,8 @@ class Bot(ActivityHandler):
         conversation_history.append(("bot", bot_response))
         await turn_context.send_activity(bot_response)
 
-        await self.dialogue_state_accessor.set(turn_context, new_dialogue_states)
-        await self.history_state_accessor.set(turn_context, conversation_history)
+        await self.dialogue_state_history_accessor.set(turn_context, new_dialogue_state_history)
+        await self.conversation_history_accessor.set(turn_context, conversation_history)
         await self.conversation_state.save_changes(turn_context)
 
 

@@ -39,7 +39,6 @@ try:
 except (ValueError, json.decoder.JSONDecodeError):
     treatment_fallback = 1
     use_cosmos_db_storage = False
-print("use_cosmos_db_storage: " + str(use_cosmos_db_storage))
 
 # Catch-all for errors
 async def on_error(context: TurnContext, error: Exception):
