@@ -10,13 +10,13 @@
       "slot_id": "b",
       "slot_name": "Rough problem description",
       "description": "The user has indicated (directly or indirectly) that an item from their order was missing from the delivery.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat."
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat (bzw. dass die Bestellung nicht angekommen ist)."
     },
     "c": {
       "slot_id": "c",
       "slot_name": "Detailed problem description",
       "description": "The user has indicated (directly or indirectly) which item was missing from the delivery.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, welcher Artikel bei der Lieferung gefehlt hat.",
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, welcher Artikel bei der Lieferung gefehlt hat (bzw. welcher Artikel nicht angekommen ist).",
       "validation_slot": "c_val"
     },
     "c_val": {

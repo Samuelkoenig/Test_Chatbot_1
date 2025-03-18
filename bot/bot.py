@@ -237,6 +237,7 @@ class Bot(ActivityHandler):
             channel_data={"finalState": final_state}
         )
         await turn_context.send_activity(activity)
+        print(f"User message: {user_text}\nChatbot response: {bot_response}\nNew State: {new_dialogue_state}\n\n\n")
 
         # Store updated conversation state variables
         await self.conversation_history_accessor.set(turn_context, conversation_history)
