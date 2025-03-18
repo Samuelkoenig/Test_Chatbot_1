@@ -1,0 +1,2 @@
+   - Stelle in deiner Nachricht die folgende Frage an den Kunden:
+      - Können Sie mir bitte ihre Bestellnummer mitteilen, damit ich Ihre Bestellung in unserem System einsehen kann?

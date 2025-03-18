@@ -1,0 +1,229 @@
+{
+  "states": {
+    "0": {
+      "state_description": "Initial state after the bot has sent the welcome message.",
+      "slots_to_check": ["a", "b", "c", "d", "e", "f"],
+      "slots_for_transition": ["a", "b", "c", "d"],
+      "subsequent_states": ["0", "A", "D", "AB", "AD", "C", "BD", "CD"],
+      "edges": {
+        "0 -> 0": [[]],
+        "0 -> A": [["a"]],
+        "0 -> D": [["d"]],
+        "0 -> AB": [["a", "b"], ["b"]],
+        "0 -> AD": [["a", "d"]],
+        "0 -> C": [["a", "c"], ["a", "b", "c"], ["c"], ["b", "c"]],
+        "0 -> BD": [["a", "b", "d"], ["b", "d"]],
+        "0 -> CD": [["a", "b", "c", "d"], ["b", "c", "d"], ["a", "c", "d"], ["c", "d"]]
+      },
+      "edge_policy": {
+        "0 -> 0": {"type": "direct", "next_state": "0", "rg_action": "0_repeat"},
+        "0 -> A": {"type": "direct", "next_state": "A", "rg_action": "A_standard"},
+        "0 -> D": {"type": "conditional", "condition": "D_order_number_check"},
+        "0 -> AB": {"type": "direct", "next_state": "AB", "rg_action": "AB_standard"},
+        "0 -> AD": {"type": "conditional", "condition": "AD_order_number_check"},
+        "0 -> C": {"type": "direct", "next_state": "C", "rg_action": "C_standard"},
+        "0 -> BD": {"type": "conditional", "condition": "BD_order_number_check"},
+        "0 -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "A": {
+      "state_description": "State where the user has provided a description of the request (slot a filled).",
+      "slots_to_check": ["b", "c", "d", "e", "f"],
+      "slots_for_transition": ["b", "c", "d"],
+      "subsequent_states": ["A", "AB", "AD", "C", "BD", "CD"],
+      "edges": {
+        "A -> A": [[]],
+        "A -> AB": [["b"]],
+        "A -> AD": [["d"]],
+        "A -> C": [["c"], ["b", "c"]],
+        "A -> BD": [["b", "d"]],
+        "A -> CD": [["b", "c", "d"], ["c", "d"]]
+      },
+      "edge_policy": {
+        "A -> A": {"type": "direct", "next_state": "A", "rg_action": "A_repeat"},
+        "A -> AB": {"type": "direct", "next_state": "AB", "rg_action": "AB_standard"},
+        "A -> AD": {"type": "conditional", "condition": "AD_order_number_check"},
+        "A -> C": {"type": "direct", "next_state": "C", "rg_action": "C_standard"},
+        "A -> BD": {"type": "conditional", "condition": "BD_order_number_check"},
+        "A -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "D": {
+      "state_description": "State where the user has provided the order number (slot d filled).",
+      "slots_to_check": ["a", "b", "c", "e", "f"],
+      "slots_for_transition": ["a", "b", "c"],
+      "subsequent_states": ["D", "AD", "BD", "CD"],
+      "edges": {
+        "D -> D": [[]],
+        "D -> AD": [["a"]],
+        "D -> BD": [["a", "b"], ["b"]],
+        "D -> CD": [["a", "b", "c"], ["a", "c"], ["b", "c"], ["c"]]
+      },
+      "edge_policy": {
+        "D -> D": {"type": "direct", "next_state": "D", "rg_action": "D_repeat"},
+        "D -> AD": {"type": "direct", "next_state": "AD", "rg_action": "AD_standard"},
+        "D -> BD": {"type": "conditional", "condition": "BD_preference_check_e"},
+        "D -> CD": {"type": "conditional", "condition": "CD_article_check"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "AB": {
+      "state_description": "State where the user has provided a rough problem description (slots a and b filled).",
+      "slots_to_check": ["c", "d", "e", "f"],
+      "slots_for_transition": ["c", "d"],
+      "subsequent_states": ["AB", "C", "BD", "CD"],
+      "edges": {
+        "AB -> AB": [[]],
+        "AB -> C": [["c"]],
+        "AB -> BD": [["d"]],
+        "AB -> CD": [["c", "d"]]
+      },
+      "edge_policy": {
+        "AB -> AB": {"type": "direct", "next_state": "AB", "rg_action": "AB_repeat"},
+        "AB -> C": {"type": "direct", "next_state": "C", "rg_action": "C_standard"},
+        "AB -> BD": {"type": "conditional", "condition": "BD_order_number_check"},
+        "AB -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "AD": {
+      "state_description": "State where the user has provided a description of the request and the order number (slots a and d filled).",
+      "slots_to_check": ["b", "c", "e", "f"],
+      "slots_for_transition": ["b", "c"],
+      "subsequent_states": ["AD", "BD", "CD"],
+      "edges": {
+        "AD -> AD": [[]],
+        "AD -> BD": [["b"]],
+        "AD -> CD": [["c"], ["b", "c"]]
+      },
+      "edge_policy": {
+        "AD -> AD": {"type": "direct", "next_state": "AD", "rg_action": "AD_repeat"},
+        "AD -> BD": {"type": "conditional", "condition": "BD_preference_check_e"},
+        "AD -> CD": {"type": "conditional", "condition": "CD_article_check"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "C": {
+      "state_description": "State where the user has provided a detailed problem description (slots a, b and c filled).",
+      "slots_to_check": ["d", "e", "f"],
+      "slots_for_transition": ["d"],
+      "subsequent_states": ["C", "CD"],
+      "edges": {
+        "C -> C": [[]],
+        "C -> CD": [["d"]]
+      },
+      "edge_policy": {
+        "C -> C": {"type": "direct", "next_state": "C", "rg_action": "C_repeat"},
+        "C -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "BD": {
+      "state_description": "State where user has provided a rough problem description and the order number (slots a, b and d filled).",
+      "slots_to_check": ["e", "f"],
+      "slots_for_transition": ["e", "f"],
+      "subsequent_states": ["BD", "E", "F"],
+      "edges": {
+        "BD -> BD": [[], ["e", "f"]],
+        "BD -> E": [["e"]],
+        "BD -> F": [["f"]]
+      },
+      "edge_policy": {
+        "BD -> BD": {"type": "direct", "next_state": "BD", "rg_action": "BD_repeat"},
+        "BD -> E": {"type": "direct", "next_state": "E", "rg_action": "E_standard"},
+        "BD -> F": {"type": "direct", "next_state": "F", "rg_action": "F_standard"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "CD": {
+      "state_description": "State where the user has provided a detailed problem description and the order number (slots a, b, c and d filled).",
+      "slots_to_check": ["e", "f"],
+      "slots_for_transition": ["e", "f"],
+      "subsequent_states": ["CD", "E", "F"],
+      "edges": {
+        "CD -> CD": [[], ["e", "f"]],
+        "CD -> E": [["e"]],
+        "CD -> F": [["f"]]
+      },
+      "edge_policy": {
+        "CD -> CD": {"type": "direct", "next_state": "CD", "rg_action": "CD_repeat"},
+        "CD -> E": {"type": "direct", "next_state": "E", "rg_action": "E_standard"},
+        "CD -> F": {"type": "direct", "next_state": "F", "rg_action": "F_standard"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "E": {
+      "state_description": "State where the user chose the free reshipment (state BD or CD reached and slot e filled).",
+      "slots_to_check": ["g", "h"],
+      "slots_for_transition": ["g", "h"],
+      "subsequent_states": ["G", "H"],
+      "edges": {
+        "E -> G": [["g"], []],
+        "E -> H": [["h"], ["g", "h"]]
+      },
+      "edge_policy": {
+        "E -> G": {"type": "direct", "next_state": "G", "rg_action": "G_standard"},
+        "E -> H": {"type": "direct", "next_state": "H", "rg_action": "H_standard"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "F": {
+      "state_description": "State where the user chose the full refund (state BD or CD reached and slot f filled).",
+      "slots_to_check": ["g", "h"],
+      "slots_for_transition": ["g", "h"],
+      "subsequent_states": ["G", "H"],
+      "edges": {
+        "F -> G": [["g"], []],
+        "F -> H": [["h"], ["g", "h"]]
+      },
+      "edge_policy": {
+        "F -> G": {"type": "direct", "next_state": "G", "rg_action": "G_standard"},
+        "F -> H": {"type": "direct", "next_state": "H", "rg_action": "H_standard"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "G": {
+      "state_description": "State where the scripted problem solving process is finished and the user has no more questions or requests (state E or F reached and slot g filled).",
+      "slots_to_check": [],
+      "slots_for_transition": [],
+      "subsequent_states": ["G"],
+      "edges": {
+        "G -> G": [[]]
+      },
+      "edge_policy": {
+        "G -> G": {"type": "direct", "next_state": "G", "rg_action": "G_final"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    },
+    "H": {
+      "state_description": "State where the scripted problem solving process is finished and the user has some more questions or requests (state E or F reached and slot h filled).",
+      "slots_to_check": ["g", "h"],
+      "slots_for_transition": ["g", "h"],
+      "subsequent_states": ["G", "H"],
+      "edges": {
+        "H -> G": [["g"], []],
+        "H -> H": [["h"], ["g", "h"]]
+      },
+      "edge_policy": {
+        "H -> G": {"type": "direct", "next_state": "G", "rg_action": "G_standard"},
+        "H -> H": {"type": "direct", "next_state": "H", "rg_action": "H_standard"}
+      }, 
+      "fallback_next_edge": "tbd",
+      "fallback_next_state": "tbd"
+    }
+  },
+  "final_state": "G"
+}

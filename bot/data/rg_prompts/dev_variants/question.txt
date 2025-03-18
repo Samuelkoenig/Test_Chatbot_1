@@ -1,0 +1,1 @@
+- Stelle die im User Prompt angegebene Frage an den Nutzer.

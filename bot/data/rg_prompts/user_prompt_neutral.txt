@@ -1,0 +1,14 @@
+[Konversationshistorie der letzten Nachrichten]
+---
+{conversation_history}
+---
+
+[Anleitung für das GPT-Modell]
+---
+1. Lies die obigen letzten Nachrichten sorgfältig.
+2. Formuliere eine neutrale und professionelle Antwort, ohne spezielle empathische Wendungen.
+{user_prompt_content}
+3. Verfasse deine finale Antwort als Fließtext in einer empathischen, freundlichen und professionellen Weise.
+
+Bitte gib NUR den finalen Nachrichtentext zurück. 
+---

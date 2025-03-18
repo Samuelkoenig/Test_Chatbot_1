@@ -1,0 +1,4 @@
+   - Nenne die folgenden Informationen in deiner Antwort:
+      - Ich helfe Ihnen gerne weiter.
+   - Stelle die folgende Frage an den Kunden:
+      - Können Sie mir bitte mitteilen, welcher Artikel bei der Lieferung gefehlt hat?

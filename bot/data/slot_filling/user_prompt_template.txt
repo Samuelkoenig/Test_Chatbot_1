@@ -1,0 +1,23 @@
+Der folgende Abschnitt enthält die notwendigen Informationen für die Klassifikationsaufgabe.
+
+Vorangegangene Nachricht des Chatbots:
+--- START ---
+{last_bot_message}
+--- ENDE ---
+
+Nutzernachricht:
+--- START ---
+{user_text}
+--- ENDE ---
+
+Folgende Slots sollen klassifiziert werden. Die einzelnen Slots sind in einer JSON-Struktur angegeben, wobei jeweils der Schlüssel die slot_id und der Wert die Beschreibung des Slots ist:
+--- START ---
+{slots}
+--- ENDE ---
+
+Der folgende Abschnitt enthält eine detaillierte Beschreibung der Aufgabe.
+
+1) Lies dir die die vorangegangene Nachricht des Chatbots und die Nutzernachricht durch.
+2) Gehe die einzelnen nacheinander Slots durch, und entscheide für jeden Slot anhand der Beschreibung des Slots, ob er in der Nutzernachricht erfüllt (=1) oder nicht erfüllt (=0) ist.{validation_slot_notes}
+3) Gib bitte ausschließlich eine JSON-Ausgabe im folgenden Format zurück (ohne zusätzliche Erläuterungen oder Text): {{"slot_id_1": Klassifizierungsergebnis, ...}}. In der Ausgabe sollen alle Slots aus der obigen Liste enthalten sein, auch wenn sie als 0 klassifiziert wurden.
+    - Beispiel: {output_example}

@@ -1,0 +1,6 @@
+   - Nenne die folgenden Informationen in deiner Antwort:
+      - Ich habe die Bestellung im System gefunden und festgestellt, dass ihre bestellte Armbanduhr nicht geliefert wurde.
+      - Ein Fehler im Verpackungsprozess war Ursache für die fehlende Lieferung.
+      - Ich habe eine kostenlose Express-Lieferung der fehlenden Armbanduhr an Ihre hinterlegte Lieferadresse veranlasst.
+   - Stelle abschließend die folgende Frage an den Kunden:
+      - Haben Sie noch weitere Fragen oder Wünsche?

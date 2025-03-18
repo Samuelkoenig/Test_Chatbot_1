@@ -1,0 +1,2 @@
+- Baue die Informationen aus den vorgegebenen Stichpunkten (die im User Prompt folgen) in deine Antwort ein.
+- Abschließend stellst du die im User Prompt angegebene Frage an den Nutzer.

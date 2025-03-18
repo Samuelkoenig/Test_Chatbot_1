@@ -1,12 +1,8 @@
-import os
-import json
-from dotenv import load_dotenv
-import time
-
-import openai
-
 from botbuilder.core import ActivityHandler, TurnContext, ConversationState
-from botbuilder.schema import ChannelAccount
+from botbuilder.schema import ChannelAccount, Activity, ActivityTypes
+
+from bot.dialogue_start import DialogueStart
+from bot.message_processing import MessageProcessing
 
 
 class Bot(ActivityHandler):
@@ -23,7 +19,8 @@ class Bot(ActivityHandler):
             - conversation_history_accessor: The conversation history. 
             - dialogue_state_history_accessor: The dialogue state history. 
             - slot_filling_accessor: The slot filling information. 
-        - Initializes an instance of the DialogueLogic class to generate the bot's messages. 
+        - Initializes an instance of the StartDialogue class to initially start the dialogue.
+        - Initializes an instance of the MessageProcessing class to process user messages. 
         
         Args: 
             conversation_state (ConversationState): The stored conversation state.
@@ -40,7 +37,8 @@ class Bot(ActivityHandler):
         self.dialogue_state_history_accessor = self.conversation_state.create_property("DialogueStateHistory")
         self.slot_filling_accessor = self.conversation_state.create_property("SlotFilling")
 
-        self.conversation_logic = DialogueLogic()
+        self.dialogue_start = DialogueStart()
+        self.message_processing = MessageProcessing()
 
     async def set_treatment_state(self, turn_context: TurnContext) -> int:
         """
@@ -88,13 +86,69 @@ class Bot(ActivityHandler):
         treatment_group = await self.treatment_state_accessor.get(turn_context, self.treatment_fallback)
         return treatment_group
     
+    async def get_conversation_history(self, turn_context: TurnContext) -> list:
+        """
+        Retrieves the conversation history from the conversation state.
+        - If there is no conversation history stored, returns an empty list.
+        
+        Args: 
+            turn_context (TurnContext): The information about the current activity.
+
+        Returns: 
+            list: The conversation history.
+        """
+
+        conversation_history = await self.conversation_history_accessor.get(turn_context)
+        if conversation_history is None:
+            conversation_history = []
+        
+        return conversation_history
+    
+    async def get_dialogue_state_history(self, turn_context: TurnContext) -> list:
+        """
+        Retrieves the dialogue state history from the conversation state.
+        - If there is no dialogue state history stored, returns an empty list.
+        
+        Args: 
+            turn_context (TurnContext): The information about the current activity.
+
+        Returns: 
+            list: The dialogue state history.
+        """
+
+        dialogue_state_history = await self.dialogue_state_history_accessor.get(turn_context)
+        if dialogue_state_history is None:
+            dialogue_state_history = []
+
+        return dialogue_state_history
+    
+    async def get_slot_filling(self, turn_context: TurnContext) -> dict:
+        """
+        Retrieves the slot filling dictionary from the conversation state.
+        - If there is no slot filling dictionary stored, returns an empty dictionary.
+        
+        Args: 
+            turn_context (TurnContext): The information about the current activity.
+
+        Returns: 
+            list: The slot filling dictionary.
+        """
+
+        slot_filling = await self.slot_filling_accessor.get(turn_context)
+        if slot_filling is None:
+            slot_filling = {}
+
+        return slot_filling       
+    
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
         """
-        Initializes a new conversation. 
-        - Sends the welcome message using the DialogueLogic class instance. 
-        - Updates the conversation history. 
-        - Updates the dialogue state. 
-        - Switches the welcome_state variable. 
+        Initializes a new conversation. This function is executed when the user opens the chatbot. 
+        - Retrieves the welcome_sent variable from the conversation state to check whether the welcome 
+        message was already sent. 
+        - Determines the treatment group value for the conversation and stores it in the conversation state. 
+        - If the welcome message has not been sent to the user: Switches the welcome_sent variable, sends 
+        the welcome message, initializes the conversation history and dialogue state history and updates the 
+        conversation state. 
 
         Args: 
             members_added (ChannelAccount): The information about the user account. 
@@ -104,242 +158,88 @@ class Bot(ActivityHandler):
         # Retrieve welcome state
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
 
-        # Retrieve treatment_group value
-        treatment_group = await self.set_treatment_state(turn_context)
+        # Retrieve treatment_group value and set conversation state accordingly
+        await self.set_treatment_state(turn_context)
 
-        # Generate initial welcome message
+        # Generate initial welcome message and initialize dialogue state variables
+        # the first time a user enters the chat. 
         for member_added in members_added:
             if member_added.id != turn_context.activity.recipient.id and not welcome_sent:
-                conversation_history = await self.conversation_history_accessor.get(turn_context)
-                dialogue_state_history = await self.dialogue_state_history_accessor.get(turn_context)
-                if conversation_history is None:
-                    conversation_history = []
-                if dialogue_state_history is None:
-                    dialogue_state_history = []
+
+                # Retrieve conversation state variables
+                conversation_history = await self.get_conversation_history(turn_context)
+                dialogue_state_history = await self.get_dialogue_state_history(turn_context)
                 
-                welcome_text, new_dialogue_state_history = self.conversation_logic.get_welcome_message(
-                    treatment_group,
-                    dialogue_state_history
-                )
+                # Retrieve welcome text and initial state
+                welcome_text, initial_dialogue_state = self.dialogue_start.start_dialogue()
+
+                # Update the conversation state variables
                 conversation_history.append(("bot", welcome_text))
+                dialogue_state_history.append(initial_dialogue_state)
+
+                # Send welcome message
                 await turn_context.send_activity(welcome_text)
                 
-                await self.dialogue_state_history_accessor.set(turn_context, new_dialogue_state_history)
+                # Store updated conversation state variables
                 await self.conversation_history_accessor.set(turn_context, conversation_history)
+                await self.dialogue_state_history_accessor.set(turn_context, dialogue_state_history)
                 await self.welcome_state_accessor.set(turn_context, True)
                 await self.conversation_state.save_changes(turn_context)
 
     async def on_message_activity(self, turn_context: TurnContext):
         """
-        Processes user messages.
-        - Sends the bot response using the DialogueLogic class instance. 
-        - Updates the conversation history. 
+        Processes a user message. This function is executed each time the user 
+        sends a message to the chatbot. 
+        - Retrieves the conversation state variables of the conversation.
+        - Receives the user message.
+        - Executes the process_message function from the MessageProcessing 
+        class to determine the bot response, the new dialogue state, the 
+        final_state flag and the new slot filling dictionary, given the user 
+        message, the treatment group value, the conversation history, the 
+        dialogue state history and the current slot filling dictionary. 
+        - Sends the bot response and the final_state metadata.
+        - Updates the conversation state.  
         
         Args:
-            turn_context (TurnContext): The information about the current activity.
+            turn_context (TurnContext): The information about the current 
+            activity.
         """
 
+        # Retrieve conversation state variables
         treatment_group = await self.get_treatment_state(turn_context)
+        conversation_history = await self.get_conversation_history(turn_context)
+        dialogue_state_history = await self.get_dialogue_state_history(turn_context)
+        slot_filling = await self.get_slot_filling(turn_context)
 
+        # Extract the user message
         user_text = turn_context.activity.text
-        conversation_history = await self.conversation_history_accessor.get(turn_context)
-        dialogue_state_history = await self.dialogue_state_history_accessor.get(turn_context)
-        if conversation_history is None:
-            conversation_history = []
-        if dialogue_state_history is None:
-            dialogue_state_history = []
 
-        bot_response, new_dialogue_state_history = self.conversation_logic.get_bot_message(
+        # Process the user message
+        bot_response, new_dialogue_state, final_state, new_slot_filling = self.message_processing.process_message(
+            user_text,
             treatment_group,
             conversation_history,
             dialogue_state_history,
-            user_text
+            slot_filling
         )
 
+        # Update the conversation state variables
         conversation_history.append(("user", user_text))
         conversation_history.append(("bot", bot_response))
-        await turn_context.send_activity(bot_response)
+        dialogue_state_history.append(new_dialogue_state)
+        slot_filling = new_slot_filling
 
-        await self.dialogue_state_history_accessor.set(turn_context, new_dialogue_state_history)
+        # Send an activity object with the bot response and the final_state 
+        # value as metadata
+        activity = Activity(
+            type=ActivityTypes.message,
+            text=bot_response,
+            channel_data={"finalState": final_state}
+        )
+        await turn_context.send_activity(activity)
+
+        # Store updated conversation state variables
         await self.conversation_history_accessor.set(turn_context, conversation_history)
-        await self.conversation_state.save_changes(turn_context)
-
-
-class DialogueLogic:
-    """
-    Class that contains the logic for generating the bot's messages.
-    """
-
-    def __init__(self): 
-        """
-        Constructor of the DialogueLogic class. 
-        Initializes a dictionary with the dialogue states. 
-        Loads the gpt api key from the environment variables. 
-        """
-
-        self.dialogue_states = {}
-        self.load_dialogue_states()
-
-        load_dotenv()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        self.openai_client = openai.OpenAI()
-    
-    def load_dialogue_states(self):
-        """
-        Loads the dialogue states from the json file. 
-        """
-
-        dialogue_states_file_path = os.path.join(os.path.dirname(__file__), "dialogue_states.json")
-        with open(dialogue_states_file_path, "r", encoding="utf-8") as f:
-            self.dialogue_states = json.load(f)
-
-    def get_welcome_message(self, treatment_group: int, dialogue_states_history: list) -> tuple[str, list]:
-        """
-        Returns the welcome message based on the treatment_group value. 
-        Updates the dialogue_states_history.
-
-        Args: 
-            treatment_group (int): The treatment group value. 
-            dialogue_states_history (list): The previous dialogue states of the conversation. 
-
-        Returns:
-            str: The bot's welcome message. 
-            list: The updated dialogue states history of the conversation. 
-        """
-        
-        new_dialogue_states_history = self.determine_next_dialogue_state(dialogue_states_history)
-        bot_welcome_message = self.dialogue_states[new_dialogue_states_history[-1]]["message"]
-
-        return bot_welcome_message, new_dialogue_states_history
-
-    def get_bot_message(self, treatment_group: int, conversation_history: list, dialogue_states_history: list, user_text: str) -> tuple[str, list]:
-        """
-        Returns a bot response to a user message based on the treatment group value and the conversation history. 
-
-        Args: 
-            treatment_group (int): The treatment group value. 
-            conversation_history (list): The previous messages of the conversation. 
-            dialogue_states_history (list): The previous dialogue states of the conversation. 
-            user_text (str): The current user message to be answered. 
-
-        Returns:
-            str: The bot's response to the user message. 
-            list: The updated dialogue states history of the conversation.  
-        """
-
-        new_dialogue_states_history = self.determine_next_dialogue_state(dialogue_states_history, conversation_history, user_text)
-        bot_message = self.dialogue_states[new_dialogue_states_history[-1]]["message"]
-
-        if treatment_group == 1: 
-            start_time = time.perf_counter()
-            bot_message = self.get_empathetic_response(conversation_history, user_text, bot_message)
-            end_time = time.perf_counter() 
-            execution_time = end_time - start_time
-            print(f"Execution time for the gpt api call: {execution_time:.6f} seconds")
-        else: 
-            time.sleep(1.3)
-
-        return bot_message, new_dialogue_states_history
-    
-    def determine_next_dialogue_state(self, dialogue_states_history: list, conversation_history: list = [], user_text: str = "") -> list:
-        """
-        Determines the next dialogue state based on the dialogue state history, 
-        the conversation history and the user message.
-
-        Args: 
-            dialogue_states_history (list): The previous dialogue states of the conversation. 
-            conversation_history (list): The previous messages of the conversation. 
-            user_text (str): The current user message to be answered. 
-        
-        Returns: 
-            list: The updated dialogue states history of the conversation.
-        """
-
-        if len(dialogue_states_history) == 0:
-            dialogue_states_history.append("1")
-        elif dialogue_states_history[-1] == "1":
-            dialogue_states_history.append("3")
-        elif dialogue_states_history[-1] == "3":
-            dialogue_states_history.append("5")
-        elif dialogue_states_history[-1] == "5":
-            dialogue_states_history.append("7")
-        elif dialogue_states_history[-1] == "7":
-            dialogue_states_history.append("9")
-        else: 
-            dialogue_states_history.append("9")
-
-        return dialogue_states_history
-    
-    def get_empathetic_response(self, conversation_history: list, user_text: str, bot_message: str) -> str: 
-        """
-        Formulates a response by the chatbot in an empathetic way using the GPT model.
-        
-        Args: 
-            conversation_history (list): The previous messages of the conversation. 
-            user_text (str): The current user message to be answered. 
-            bot_message (str): The bot message that should be formulated in an empathetic way. 
-        
-        Returns: 
-            str: The bot response, formulated in an empathetic way. 
-        """
-
-        root_path = os.path.join(os.path.dirname(__file__))
-
-        developer_prompt_file_path = root_path + "/prompts/empathetic_response_prompt/developer_prompt.txt"
-        with open(developer_prompt_file_path, "r", encoding="utf-8") as f_dev:
-            developer_prompt = f_dev.read()
-
-        user_prompt_file_path = root_path + "/prompts/empathetic_response_prompt/user_prompt.txt"        
-        with open(user_prompt_file_path, "r", encoding="utf-8") as f_user:
-            user_prompt_template = f_user.read()
-        
-        conv_hist_string = self.get_conv_hist_for_prompt(conversation_history, user_text)
-
-        user_prompt = user_prompt_template.format(
-            conversation_history=conv_hist_string,
-            bot_message=bot_message
-        )
-
-        print(developer_prompt)
-        print(user_prompt)
-
-        completion = self.openai_client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "developer", "content": developer_prompt},
-                {"role": "user", "content": user_prompt}
-            ]
-        )
-
-        print(completion)
-
-        empathetic_response = completion.choices[0].message.content
-
-        return empathetic_response
-    
-    def get_conv_hist_for_prompt(self, conversation_history: list, user_text: str) -> str: 
-        """
-        Takes the conversation_history and converts it into a string suitable for the GPT API prompt.
-        
-        Args: 
-            conversation_history (list): The previous messages of the conversation. 
-            user_text (str): The current user message to be answered. 
-            
-        Returns: 
-            str: The conversation history in a suitable format for the prompt.
-        """
-
-        lines = []
-        for role, text in conversation_history:
-            if role.lower() == "bot":
-                speaker = "Chatbot"
-            else:
-                speaker = "Kunde"
-            lines.append(f'{speaker}: "{text}"')
-
-        lines.append(f'Kunde: "{user_text}"')
-
-        conv_hist_string = "\n".join(lines)
-        return conv_hist_string
-        
-        
+        await self.dialogue_state_history_accessor.set(turn_context, dialogue_state_history)
+        await self.slot_filling_accessor.set(turn_context, slot_filling)
+        await self.conversation_state.save_changes(turn_context)       

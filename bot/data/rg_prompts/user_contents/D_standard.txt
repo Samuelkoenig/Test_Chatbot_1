@@ -1,0 +1,4 @@
+   - Nenne die folgenden Informationen in deiner Antwort:
+      - Ich habe Ihre Bestellnummer in System gefunden.
+   - Stelle die folgende Frage an den Kunden:
+      - Mit welchem Anliegen kann ich Ihnen helfen?

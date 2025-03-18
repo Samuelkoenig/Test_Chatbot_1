@@ -1,0 +1,6 @@
+   - Nenne die folgenden Informationen in deiner Antwort:
+      - Ich habe die Bestellung im System gefunden und festgestellt, dass ihre bestellte Armbanduhr nicht geliefert wurde.
+      - Ein Fehler im Verpackungsprozess war Ursache für die fehlende Lieferung.
+      - Wir können entweder die Armbanduhr versandkostenfrei nachliefern oder den zu viel gezahlten Betrag zurückerstatten.
+   - Stelle abschließend die folgende Frage an den Kunden:
+      - Welche dieser Optionen bevorzugen Sie?

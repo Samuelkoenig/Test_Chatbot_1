@@ -1,0 +1,1 @@
+- Baue die Informationen aus den vorgegebenen Stichpunkten (die im User Prompt folgen) in deine Antwort ein.

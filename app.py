@@ -32,7 +32,7 @@ adapter = BotFrameworkAdapter(settings)
 # Load botsettings
 botsettings_file_path = os.path.join(os.path.dirname(__file__), "botsettings.json")
 try:
-    with open(botsettings_file_path, "r") as f:
+    with open(botsettings_file_path, "r", encoding="utf-8") as f:
         botsettings_data = json.load(f)
     treatment_fallback = int(botsettings_data.get("treatment_group_fallback", 1))
     use_cosmos_db_storage = bool(botsettings_data.get("use_cosmos_db_storage", False))
