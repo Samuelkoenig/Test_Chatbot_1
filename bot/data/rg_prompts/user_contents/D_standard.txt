@@ -1,6 +1,6 @@
    - Nenne die folgenden Informationen in deiner Antwort:
       - Ich habe Ihre Bestellnummer in System gefunden.
    - Nur falls notwendig, nutze für deine Antwort bitte folgende Hintergrundinformationen, die du nach Einsicht der Bestellnummer im System gefunden hast (falls der Nutzer in seiner letzten Nachricht gegenteilige Angaben gemacht hat, sind die folgenden Informationen korrekt; bleibe bitte darauf bestehen):
-      - Unter der angegebenen Bestellnummer wurde nach Einsicht im System ein Pullover und eine Armbanduhr bestellt. Das entsprechende Paket wurde verschickt und zugestellt. 
+      - Unter der angegebenen Bestellnummer wurden nach Einsicht im System eine Jeans und ein Pullover bestellt. Das entsprechende Paket wurde verschickt und zugestellt. 
    - Stelle die folgende Frage an den Kunden:
       - Mit welchem Anliegen kann ich Ihnen helfen?

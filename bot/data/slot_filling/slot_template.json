@@ -3,8 +3,8 @@
     "a": {
       "slot_id": "a",
       "slot_name": "Description of the request",
-      "description": "The user has described (directly or indirectly) that their was a problem with the delivery of their order.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) beschrieben, dass es ein Problem bei der Lieferung seiner Bestellung gab."
+      "description": "The user has described (directly or indirectly) that her request is an order or that there was a problem with the delivery of their order.",
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) beschrieben, dass sein Anliegen eine Bestellung ist bzw. es ein Problem bei der Lieferung seiner Bestellung gab."
     },
     "b": {
       "slot_id": "b",
@@ -22,8 +22,8 @@
     "c_val": {
       "slot_id": "c_val",
       "slot_name": "Missing article validation",
-      "description": "The missing item reported by the user is a wristwatch (alternative descriptions like 'watch' should also be accepted).",
-      "prompt_description": "Der vom Nutzer mitgeteilte fehlende Artikel ist eine Armbanduhr (bitte auch andere umschreibende Formulierungen wie 'Uhr' akzeptieren)."
+      "description": "The missing item reported by the user is a pullover (alternative descriptions like 'sweater' should also be accepted).",
+      "prompt_description": "Der vom Nutzer mitgeteilte fehlende Artikel ist ein Pullover (bitte auch andere umschreibende Formulierungen wie 'Pulli' akzeptieren)."
     },
     "d": {
       "slot_id": "d",
@@ -35,8 +35,8 @@
     "d_val": {
       "slot_id": "d_val",
       "slot_name": "Order number validation",
-      "description": "The order number provided by the user is 224466 (please also accept minor deviations as long as it is clear that 224466 is meant).",
-      "prompt_description": "Die vom Nutzer angegebene Bestellnummer entspricht 224466 (bitte auch kleine Abweichungen akzeptieren, solange klar ist, dass 224466 gemeint ist)."
+      "description": "The order number provided by the user is 2246 (please also accept minor deviations as long as it is clear that 2246 is meant).",
+      "prompt_description": "Die vom Nutzer angegebene Bestellnummer entspricht 2246 (bitte auch kleine Abweichungen akzeptieren, solange klar ist, dass 2246 gemeint ist)."
     },
     "e": {
       "slot_id": "e",
