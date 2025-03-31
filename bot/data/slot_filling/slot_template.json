@@ -70,25 +70,13 @@
         "\\b2246\\b"
       ]
     },
-    "e": {
-      "slot_id": "e",
-      "slot_name": "Solution request: free reshipment",
-      "description": "The user indicates that they would like a free reshipment of the missing item.",
-      "prompt_description": "Der Nutzer teilt mit, dass er eine kostenlose Nachlieferung des fehlenden Artikels wünscht.",
-      "counterpart_slot": "f",
-      "slot_patterns": [
-        "\\bnachliefer(?:ung|n)\\b",
-        "\\bnachgeliefert\\b"
-      ]
-    },
     "f": {
       "slot_id": "f",
-      "slot_name": "Solution request: full refund",
-      "description": "The user requests a full refund.",
-      "prompt_description": "Der Nutzer teilt mit, dass er eine vollständige Erstattung des Preises wünscht.",
-      "counterpart_slot": "e",
+      "slot_name": "Customer does not agree with the free reshipment",
+      "description": "The user does not agree with the free reshipment.",
+      "prompt_description": "Der Nutzer hat die angebotene kostenlose Nachlieferung abgelehnt (bzw. gesagt, dass das nicht in Ordnung für ihn ist).",
       "slot_patterns": [
-        "\\berstatt(?:ung|et|en)\\b"
+        "\\bnein\\b"
       ]
     },
     "g": {
@@ -98,6 +86,7 @@
       "prompt_description": "Der Nutzer hat keine weiteren themenbezogenen Fragen oder Wünsche.",
       "counterpart_slot": "h",
       "slot_patterns": [
+        "\\bja\\b",
         "\\bnein\\b",
         "\\bkeine\\b\\s+(frage|wunsch|wünsche)"
       ]
@@ -106,7 +95,7 @@
       "slot_id": "h",
       "slot_name": "Further related questions or requests",
       "description": "The user asks a topic-related question or makes a topic-related request.",
-      "prompt_description": "Der Nutzer stellt eine themenbezogene Frage oder äußert einen themenbezogenen Wunsch.",
+      "prompt_description": "Der Nutzer stellt eine themenbezogene Frage oder äußert einen themenbezogenen Wunsch (oder er sagt, dass er noch eine Frage oder einen Wunsch hat).",
       "counterpart_slot": "g",
       "slot_patterns": [
         "\\?",

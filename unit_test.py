@@ -22,7 +22,7 @@ def run_test():
     #get_slot_filling_prompts_test()
     #run_slot_filling_test()
     #run_dialogue_management_test()
-    #bulk_run_dialogue_management_test()
+    bulk_run_dialogue_management_test()
     #run_get_conv_history_for_prompt_test()
     #run_get_rg_dev_prompt_test()
     #run_get_rg_user_prompt_test()
@@ -30,7 +30,7 @@ def run_test():
     #bulk_run_response_generation_test()
     #run_dialogue_management_fallback_test()
     #run_slot_filling_fallback_test()
-    run_response_generation_fallback_test()
+    #run_response_generation_fallback_test()
 
 
 def get_slot_filling_prompts_test():
@@ -86,8 +86,8 @@ def powerset(iterable):
         return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
 def bulk_run_dialogue_management_test():
-    dialogue_states = ["0", "A", "D", "AB", "AD", "C", "BD", "CD", "E", "F", "G", "H"]
-    slots = ["a", "b", "c", "c_val", "d", "d_val", "e", "f", "g", "h"]
+    dialogue_states = ["0", "A", "D", "AB", "AD", "C", "BD", "CD", "F", "G", "H"]
+    slots = ["a", "b", "c", "c_val", "d", "d_val", "f", "g", "h"]
     current_dialogue_state = "0"
     for combination in powerset(slots):
         for current_dialogue_state in dialogue_states:

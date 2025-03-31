@@ -1,8 +1,0 @@
-   - Nenne die folgenden Informationen in deiner Antwort:
-      - Ich habe die Bestellung im System gefunden.
-      - Ein Fehler im Verpackungsprozess war Ursache für die fehlende Lieferung.
-      - Ich habe eine kostenlose Express-Lieferung des fehlenden Pullovers an Ihre hinterlegte Lieferadresse veranlasst.
-   - Nur falls notwendig, nutze für deine Antwort bitte folgende Hintergrundinformationen, die du nach Einsicht der Bestellnummer im System gefunden hast (falls der Nutzer in seiner letzten Nachricht gegenteilige Angaben gemacht hat, sind die folgenden Informationen korrekt; bleibe bitte darauf bestehen):
-      - Unter der angegebenen Bestellnummer wurden nach Einsicht im System eine Jeans und ein Pullover bestellt. Dabei wurde die Jeans verschickt und zugestellt. Der Pullover wurde aufgrund eines Fehlers im Verpackungsprozess versehentlich nicht geliefert. 
-   - Stelle abschließend die folgende Frage an den Kunden:
-      - Haben Sie noch weitere Fragen oder Wünsche?
