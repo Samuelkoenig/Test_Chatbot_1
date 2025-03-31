@@ -1,6 +1,7 @@
 import random
 import os
 import json
+import re
 from dotenv import load_dotenv
 import openai
 from openai import OpenAI
@@ -16,6 +17,8 @@ class SlotFilling:
         Constructor of the SlotFilling class.
         - Initializes the slot_template dictionary and the state_info dictionary. 
         - Creates an openai client instance.
+        - Complies the patterns from the slot_template dictionary to regex 
+        patterns using the compile_regex_patterns method.
 
         Args:
             slot_template (dict): The dictionary with the slot template.
@@ -25,6 +28,7 @@ class SlotFilling:
         self.slot_template = slot_template
         self.state_info = state_info
         self.openai_client = self.create_openai_client()
+        self.slot_patterns = self.compile_regex_patterns()
     
     def create_openai_client(self) -> OpenAI:
         """
@@ -340,3 +344,58 @@ class SlotFilling:
         filled_slots = {slot: 1 for slot, val in classification_result.items() if val == 1}
 
         return filled_slots
+    
+    def run_fallback(self, user_text: str, current_dialogue_state: str) -> dict:
+        """
+        Fallback slot filling function.
+        - This function is called if an exception occurred during the execution 
+        of the run function.
+        - Uses the current dialogue state to get the relevant slots to check.
+        - Checks the relevant slot in the user text using a pattern matching 
+        approach.
+        
+        Args:
+            user_text (str): The user message.
+            current_dialogue_state (str): The current dialogue state.
+            
+        Returns:
+            dict: The filled slots from the user message. Keys are the ids of 
+            the filled slots, values are 1. 
+        """
+
+        # Generate a base dictionary for the filled slots
+        filled_slots = {slot_id: 0 for slot_id in self.slot_template.keys()}
+
+        # Get the relevant slots to analyze based on the current dialogue state
+        slots_to_check = self._get_slots_to_check(current_dialogue_state)
+
+        # Perform the pattern matching and fill the filled_slots dictionary
+        for slot in slots_to_check:
+            for pattern in self.slot_patterns[slot]:
+                match = pattern.search(user_text)
+                if match: 
+                    filled_slots[slot] = 1
+                    break
+        
+        # Prepare the filled slots for the output format
+        filled_slots = self._prepare_result(filled_slots)
+
+        return filled_slots
+    
+    def compile_regex_patterns(self):
+        """
+        Complies the patterns from the slot_template dictionary to regex 
+        patterns.
+
+        Returns:
+            dict: A dictionary with the slot_ids as keys and a list with the
+            corresponding regex patterns as values.
+        """
+
+        slot_patterns = {}
+        for slot_id, slot_data in self.slot_template.items():
+            compiled_list = []
+            for pattern_str in slot_data["slot_patterns"]:
+                compiled_list.append(re.compile(pattern_str, re.IGNORECASE))
+            slot_patterns[slot_id] = compiled_list
+        return slot_patterns

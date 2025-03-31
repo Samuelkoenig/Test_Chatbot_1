@@ -4,67 +4,114 @@
       "slot_id": "a",
       "slot_name": "Description of the request",
       "description": "The user has described (directly or indirectly) that her request is an order or that there was a problem with the delivery of their order.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) beschrieben, dass sein Anliegen eine Bestellung ist bzw. es ein Problem bei der Lieferung seiner Bestellung gab."
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) beschrieben, dass sein Anliegen eine Bestellung ist bzw. es ein Problem bei der Lieferung seiner Bestellung gab.",
+      "slot_patterns": [
+        "\\bbestell(?:ung|t|t?e|auf)\\b",
+        "\\bliefer(?:ung|problem|)\\b",
+        "problem(?:e|)?\\s+(?:\\S+\\s+){0,10}(bestell|liefer)",
+        "(bestell|liefer)\\s+(?:\\S+\\s+){0,10}problem(?:e|)?"
+      ]
     },
     "b": {
       "slot_id": "b",
       "slot_name": "Rough problem description",
       "description": "The user has indicated (directly or indirectly) that an item from their order was missing from the delivery.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat (bzw. dass die Bestellung nicht angekommen ist)."
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat (bzw. dass die Bestellung nicht angekommen ist).",
+      "slot_patterns": [
+        "(bestell|liefer)\\s+(?:\\S+\\s+){0,10}(nicht\\s+angekommen|nicht\\s+erhalten)",
+        "\\b(fehl|nicht)\\w*\\b.*\\b(liefer|bestell|paket)\\b",
+        "\\b(?:nicht|(?:ge)?fehl(?:t|te|en|end(?:e)?)?)\\b\\s+(?:\\S+\\s+)*\\b(?:(?:ge)?liefer(?:t|ung)|bestell(?:ung)|paket?)\\b",
+        "\\b(?:(?:ge)?liefer(?:t|ung)|bestell(?:ung)|paket?)\\b\\s+(?:\\S+\\s+)*\\b(?:nicht|(?:ge)?fehl(?:t|te|en|end(?:e)?)?)\\b",
+        "\\b(nicht\\s+angekommen|nicht\\s+\\S*geliefert|nicht\\s+erhalten)\\b",
+        "\\bunvollst\\w*\\s+(liefer|bestell|paket)\\b"
+      ]
     },
     "c": {
       "slot_id": "c",
       "slot_name": "Detailed problem description",
       "description": "The user has indicated (directly or indirectly) which item was missing from the delivery.",
       "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, welcher Artikel bei der Lieferung gefehlt hat (bzw. welcher Artikel nicht angekommen ist).",
-      "validation_slot": "c_val"
+      "validation_slot": "c_val",
+      "slot_patterns": [
+        "\\bfehlt(e|en)?\\s+(?:der|die|das|den|ein(en|e|es)?\\s+)?\\S+",
+        "(?:der|die|das|den|ein(en|e|es)?\\s+)?\\s+\\bfehlt(e|en)?",
+        "\\b(?:den|der|das|die|meinen|meine|mein)\\b(?:(?:\\s+(?!Bestellung\\b|Lieferung\\b)\\S+)){0,10}?\\s+nicht(?:\\s+\\S+){0,10}?\\s+\\S*(bekommen|erhalten|enthalten|drin|gekriegt|angekommen|zugestellt|geliefert|Paket|Lieferung)",
+        "\\b(?:den|der|das|die|meinen|meine|mein)\\b(?:(?:\\s+(?!Bestellung\\b|Lieferung\\b)\\S+)){0,10}?\\s+\\b(?:(?:ge)?fehl(?:t|te|en|end(?:e)?)?)\\b"
+      ]
     },
     "c_val": {
       "slot_id": "c_val",
       "slot_name": "Missing article validation",
       "description": "The missing item reported by the user is a pullover (alternative descriptions like 'sweater' should also be accepted).",
-      "prompt_description": "Der vom Nutzer mitgeteilte fehlende Artikel ist ein Pullover (bitte auch andere umschreibende Formulierungen wie 'Pulli' akzeptieren)."
+      "prompt_description": "Der vom Nutzer mitgeteilte fehlende Artikel ist ein Pullover (bitte auch andere umschreibende Formulierungen wie 'Pulli' akzeptieren).",
+      "slot_patterns": [
+        "^(?!.*\\b(?:jeans|hose)\\b).*?\\b(?:pullover|pulli)\\b.*$",
+        "\\b(?:pullover|pulli)\\b(?:(?:\\s+(?!jeans\\b|hose\\b)\\S+))*\\s+\\b(?:nicht|(?:ge)?fehl(?:t|te|en|end(?:e)?)?)\\b",
+        "^(?:(?!\\b(?:jeans|hose)\\b).)*\\b(?:(?:ge)?fehl(?:t|te|en|end(?:e)?)?)\\b(?:(?:\\s+(?!jeans\\b|hose\\b)\\S+))*\\s+\\b(?:pullover|pulli)\\b"
+      ]
     },
     "d": {
       "slot_id": "d",
       "slot_name": "Provision of the order number",
       "description": "The user has provied the order number.",
       "prompt_description": "Der Nutzer hat die Bestellnummer angegeben.",
-      "validation_slot": "d_val"
+      "validation_slot": "d_val",
+      "slot_patterns": [
+        "\\b(?:bestellnummer|nummer|auftragsnummer)\\b(?:\\s+\\S+){0,20}?\\b\\d{1,10}\\b",
+        "\\b\\d{1,10}\\b"
+      ]
     },
     "d_val": {
       "slot_id": "d_val",
       "slot_name": "Order number validation",
       "description": "The order number provided by the user is 2246 (please also accept minor deviations as long as it is clear that 2246 is meant).",
-      "prompt_description": "Die vom Nutzer angegebene Bestellnummer entspricht 2246 (bitte auch kleine Abweichungen akzeptieren, solange klar ist, dass 2246 gemeint ist)."
+      "prompt_description": "Die vom Nutzer angegebene Bestellnummer entspricht 2246 (bitte auch kleine Abweichungen akzeptieren, solange klar ist, dass 2246 gemeint ist).",
+      "slot_patterns": [
+        "\\b2246\\b"
+      ]
     },
     "e": {
       "slot_id": "e",
       "slot_name": "Solution request: free reshipment",
       "description": "The user indicates that they would like a free reshipment of the missing item.",
       "prompt_description": "Der Nutzer teilt mit, dass er eine kostenlose Nachlieferung des fehlenden Artikels wünscht.",
-      "counterpart_slot": "f"
+      "counterpart_slot": "f",
+      "slot_patterns": [
+        "\\bnachliefer(?:ung|n)\\b",
+        "\\bnachgeliefert\\b"
+      ]
     },
     "f": {
       "slot_id": "f",
       "slot_name": "Solution request: full refund",
       "description": "The user requests a full refund.",
       "prompt_description": "Der Nutzer teilt mit, dass er eine vollständige Erstattung des Preises wünscht.",
-      "counterpart_slot": "e"
+      "counterpart_slot": "e",
+      "slot_patterns": [
+        "\\berstatt(?:ung|et|en)\\b"
+      ]
     },
     "g": {
       "slot_id": "g",
       "slot_name": "No further related questions or requests",
       "description": "The user has no further questions or requests on the topic.",
       "prompt_description": "Der Nutzer hat keine weiteren themenbezogenen Fragen oder Wünsche.",
-      "counterpart_slot": "h"
+      "counterpart_slot": "h",
+      "slot_patterns": [
+        "\\bnein\\b",
+        "\\bkeine\\b\\s+(frage|wunsch|wünsche)"
+      ]
     },
     "h": {
       "slot_id": "h",
       "slot_name": "Further related questions or requests",
       "description": "The user asks a topic-related question or makes a topic-related request.",
       "prompt_description": "Der Nutzer stellt eine themenbezogene Frage oder äußert einen themenbezogenen Wunsch.",
-      "counterpart_slot": "g"
+      "counterpart_slot": "g",
+      "slot_patterns": [
+        "\\?",
+        "\\b(wie|wann|wo|was|wer|warum|wieso|weshalb|welche|welcher|welches|welchem)\\b"
+      ]
     }
   }
 }

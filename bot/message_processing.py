@@ -132,11 +132,17 @@ class MessageProcessing:
         current_dialogue_state = dialogue_state_history[-1] 
 
         # Perform the slot filling
-        newly_filled_slots = self.slot_filling.run(
-            user_text=user_text,
-            current_dialogue_state=current_dialogue_state,
-            conversation_history=conversation_history
-        )
+        try:
+            newly_filled_slots = self.slot_filling.run(
+                user_text=user_text,
+                current_dialogue_state=current_dialogue_state,
+                conversation_history=conversation_history
+            )
+        except:
+            newly_filled_slots = self.slot_filling.run_fallback(
+                user_text=user_text,
+                current_dialogue_state=current_dialogue_state
+            )
 
         # Update the slot filling dictionary
         for slot, value in newly_filled_slots.items():
@@ -144,18 +150,29 @@ class MessageProcessing:
                 slot_filling[slot] = value
         
         # Perform the dialogue management
-        new_dialogue_state, rg_action, final_state = self.dialogue_management.run(
-            current_dialogue_state=current_dialogue_state,
-            slot_filling=slot_filling,
-            newly_filled_slots=newly_filled_slots
-        )
+        try:
+            new_dialogue_state, rg_action, final_state = self.dialogue_management.run(
+                current_dialogue_state=current_dialogue_state,
+                slot_filling=slot_filling,
+                newly_filled_slots=newly_filled_slots
+            )
+        except:
+            new_dialogue_state, rg_action, final_state = self.dialogue_management.run_fallback(
+                current_dialogue_state=current_dialogue_state
+            )
 
         # Perform the response generation
-        bot_response = self.response_generation.run(
-            user_text=user_text,
-            rg_action=rg_action,
-            treatment_group=treatment_group,
-            conversation_history=conversation_history,
-        )
+        try:
+            bot_response = self.response_generation.run(
+                user_text=user_text,
+                rg_action=rg_action,
+                treatment_group=treatment_group,
+                conversation_history=conversation_history,
+            )
+        except:
+            bot_response = self.response_generation.run_fallback(
+                rg_action=rg_action,
+                treatment_group=treatment_group,
+            )
 
         return bot_response, new_dialogue_state, final_state, slot_filling

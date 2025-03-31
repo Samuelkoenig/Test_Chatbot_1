@@ -206,3 +206,29 @@ class DialogueManagement:
         """
 
         return new_state == self.final_state
+    
+    def run_fallback(self, current_dialogue_state: str) -> tuple[str, str, bool]:
+        """
+        Fallback dialogue management function.
+        - This function is called if an exception occurred during the execution 
+        of the run function.
+        - Simply uses the current dialogue state to return the fallback next 
+        state and the fallback rg_action specified in the states.json file.
+        - Checks whether the new state equals the final state.
+        
+        Args: 
+            current_dialogue_state (str): The current dialogue state.
+
+        Returns: 
+            tuple[str, str, bool]: A tuple with the new dialogue state, the 
+            action and a flag whether the new dialogue state equals the final 
+            state. 
+        """
+
+        new_state = self.state_info[current_dialogue_state][
+            "fallback_next_state"]
+        rg_action = self.state_info[current_dialogue_state][
+            "fallback_rg_action"]
+        final_state = self._final_state_check(new_state)
+
+        return new_state, rg_action, final_state

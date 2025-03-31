@@ -235,3 +235,32 @@ class ResponseGeneration:
         """
         
         return gpt_response
+    
+    def run_fallback(self, rg_action: str, treatment_group: int) -> str:
+        """
+        Fallback function for the response generation.
+        - This function is called if an exception occurred during the execution 
+        of the run function.
+        - Loads a canned chatbot response based on the rg_action and the 
+        treatment group value.
+
+        Args: 
+            rg_action (str): The action to be performed.
+            treatment_group (int): The treatment group value.
+
+        Returns: 
+            str: The bot's canned response.
+        """
+
+        # Configure file path components
+        treatment = "empathetic" if treatment_group == 1 else "neutral"
+        var_file_name = self.rg_mapping[rg_action]["user_prompt_content"]
+
+        # Load canned response
+        root_path = self.root_path
+        path_suffix_parts = [
+            "data", "canned_responses", treatment, var_file_name
+        ]
+        canned_response = self.load_prompt_template(root_path, path_suffix_parts)
+
+        return canned_response

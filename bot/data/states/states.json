@@ -25,8 +25,9 @@
         "0 -> BD": {"type": "conditional", "condition": "BD_order_number_check"},
         "0 -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "0 -> AB",
+      "fallback_next_state": "AB",
+      "fallback_rg_action": "AB_standard"
     },
     "A": {
       "state_description": "State where the user has provided a description of the request (slot a filled).",
@@ -49,8 +50,9 @@
         "A -> BD": {"type": "conditional", "condition": "BD_order_number_check"},
         "A -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "A -> CD",
+      "fallback_next_state": "CD",
+      "fallback_rg_action": "CD_standard"
     },
     "D": {
       "state_description": "State where the user has provided the order number (slot d filled).",
@@ -69,8 +71,9 @@
         "D -> BD": {"type": "conditional", "condition": "BD_preference_check_e"},
         "D -> CD": {"type": "conditional", "condition": "CD_article_check"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "D -> CD",
+      "fallback_next_state": "CD",
+      "fallback_rg_action": "CD_standard"
     },
     "AB": {
       "state_description": "State where the user has provided a rough problem description (slots a and b filled).",
@@ -89,8 +92,9 @@
         "AB -> BD": {"type": "conditional", "condition": "BD_order_number_check"},
         "AB -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "AB -> CD",
+      "fallback_next_state": "CD",
+      "fallback_rg_action": "CD_standard"
     },
     "AD": {
       "state_description": "State where the user has provided a description of the request and the order number (slots a and d filled).",
@@ -107,8 +111,9 @@
         "AD -> BD": {"type": "conditional", "condition": "BD_preference_check_e"},
         "AD -> CD": {"type": "conditional", "condition": "CD_article_check"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "AD -> CD",
+      "fallback_next_state": "CD",
+      "fallback_rg_action": "CD_standard"
     },
     "C": {
       "state_description": "State where the user has provided a detailed problem description (slots a, b and c filled).",
@@ -123,8 +128,9 @@
         "C -> C": {"type": "direct", "next_state": "C", "rg_action": "C_repeat"},
         "C -> CD": {"type": "conditional", "condition": "CD_order_number_check"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "C -> CD",
+      "fallback_next_state": "CD",
+      "fallback_rg_action": "CD_standard"
     },
     "BD": {
       "state_description": "State where user has provided a rough problem description and the order number (slots a, b and d filled).",
@@ -141,8 +147,9 @@
         "BD -> E": {"type": "direct", "next_state": "E", "rg_action": "E_standard"},
         "BD -> F": {"type": "direct", "next_state": "F", "rg_action": "F_standard"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "BD -> E",
+      "fallback_next_state": "E",
+      "fallback_rg_action": "E_standard"
     },
     "CD": {
       "state_description": "State where the user has provided a detailed problem description and the order number (slots a, b, c and d filled).",
@@ -159,8 +166,9 @@
         "CD -> E": {"type": "direct", "next_state": "E", "rg_action": "E_standard"},
         "CD -> F": {"type": "direct", "next_state": "F", "rg_action": "F_standard"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "CD -> E",
+      "fallback_next_state": "E",
+      "fallback_rg_action": "E_standard"
     },
     "E": {
       "state_description": "State where the user chose the free reshipment (state BD or CD reached and slot e filled).",
@@ -175,8 +183,9 @@
         "E -> G": {"type": "direct", "next_state": "G", "rg_action": "G_standard"},
         "E -> H": {"type": "direct", "next_state": "H", "rg_action": "H_standard"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "E -> G",
+      "fallback_next_state": "G",
+      "fallback_rg_action": "G_standard"
     },
     "F": {
       "state_description": "State where the user chose the full refund (state BD or CD reached and slot f filled).",
@@ -191,8 +200,9 @@
         "F -> G": {"type": "direct", "next_state": "G", "rg_action": "G_standard"},
         "F -> H": {"type": "direct", "next_state": "H", "rg_action": "H_standard"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "F -> G",
+      "fallback_next_state": "G",
+      "fallback_rg_action": "G_standard"
     },
     "G": {
       "state_description": "State where the scripted problem solving process is finished and the user has no more questions or requests (state E or F reached and slot g filled).",
@@ -205,8 +215,9 @@
       "edge_policy": {
         "G -> G": {"type": "direct", "next_state": "G", "rg_action": "G_final"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "G -> G",
+      "fallback_next_state": "G",
+      "fallback_rg_action": "G_final"
     },
     "H": {
       "state_description": "State where the scripted problem solving process is finished and the user has some more questions or requests (state E or F reached and slot h filled).",
@@ -221,8 +232,9 @@
         "H -> G": {"type": "direct", "next_state": "G", "rg_action": "G_standard"},
         "H -> H": {"type": "direct", "next_state": "H", "rg_action": "H_standard"}
       }, 
-      "fallback_next_edge": "tbd",
-      "fallback_next_state": "tbd"
+      "fallback_next_edge": "H -> G",
+      "fallback_next_state": "G",
+      "fallback_rg_action": "G_standard"
     }
   },
   "final_state": "G"

@@ -1,0 +1,70 @@
+{
+  "slots": {
+    "a": {
+      "slot_id": "a",
+      "slot_name": "Description of the request",
+      "description": "The user has described (directly or indirectly) that her request is an order or that there was a problem with the delivery of their order.",
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) beschrieben, dass sein Anliegen eine Bestellung ist bzw. es ein Problem bei der Lieferung seiner Bestellung gab."
+    },
+    "b": {
+      "slot_id": "b",
+      "slot_name": "Rough problem description",
+      "description": "The user has indicated (directly or indirectly) that an item from their order was missing from the delivery.",
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat (bzw. dass die Bestellung nicht angekommen ist)."
+    },
+    "c": {
+      "slot_id": "c",
+      "slot_name": "Detailed problem description",
+      "description": "The user has indicated (directly or indirectly) which item was missing from the delivery.",
+      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, welcher Artikel bei der Lieferung gefehlt hat (bzw. welcher Artikel nicht angekommen ist).",
+      "validation_slot": "c_val"
+    },
+    "c_val": {
+      "slot_id": "c_val",
+      "slot_name": "Missing article validation",
+      "description": "The missing item reported by the user is a pullover (alternative descriptions like 'sweater' should also be accepted).",
+      "prompt_description": "Der vom Nutzer mitgeteilte fehlende Artikel ist ein Pullover (bitte auch andere umschreibende Formulierungen wie 'Pulli' akzeptieren)."
+    },
+    "d": {
+      "slot_id": "d",
+      "slot_name": "Provision of the order number",
+      "description": "The user has provied the order number.",
+      "prompt_description": "Der Nutzer hat die Bestellnummer angegeben.",
+      "validation_slot": "d_val"
+    },
+    "d_val": {
+      "slot_id": "d_val",
+      "slot_name": "Order number validation",
+      "description": "The order number provided by the user is 2246 (please also accept minor deviations as long as it is clear that 2246 is meant).",
+      "prompt_description": "Die vom Nutzer angegebene Bestellnummer entspricht 2246 (bitte auch kleine Abweichungen akzeptieren, solange klar ist, dass 2246 gemeint ist)."
+    },
+    "e": {
+      "slot_id": "e",
+      "slot_name": "Solution request: free reshipment",
+      "description": "The user indicates that they would like a free reshipment of the missing item.",
+      "prompt_description": "Der Nutzer teilt mit, dass er eine kostenlose Nachlieferung des fehlenden Artikels wünscht.",
+      "counterpart_slot": "f"
+    },
+    "f": {
+      "slot_id": "f",
+      "slot_name": "Solution request: full refund",
+      "description": "The user requests a full refund.",
+      "prompt_description": "Der Nutzer teilt mit, dass er eine vollständige Erstattung des Preises wünscht.",
+      "counterpart_slot": "e"
+    },
+    "g": {
+      "slot_id": "g",
+      "slot_name": "No further related questions or requests",
+      "description": "The user has no further questions or requests on the topic.",
+      "prompt_description": "Der Nutzer hat keine weiteren themenbezogenen Fragen oder Wünsche.",
+      "counterpart_slot": "h"
+    },
+    "h": {
+      "slot_id": "h",
+      "slot_name": "Further related questions or requests",
+      "description": "The user asks a topic-related question or makes a topic-related request.",
+      "prompt_description": "Der Nutzer stellt eine themenbezogene Frage oder äußert einen themenbezogenen Wunsch.",
+      "counterpart_slot": "g"
+    }
+  }
+}

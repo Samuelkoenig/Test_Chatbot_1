@@ -26,8 +26,11 @@ def run_test():
     #run_get_conv_history_for_prompt_test()
     #run_get_rg_dev_prompt_test()
     #run_get_rg_user_prompt_test()
-    run_response_generation_test()
+    #run_response_generation_test()
     #bulk_run_response_generation_test()
+    #run_dialogue_management_fallback_test()
+    #run_slot_filling_fallback_test()
+    run_response_generation_fallback_test()
 
 
 def get_slot_filling_prompts_test():
@@ -166,6 +169,36 @@ def bulk_run_response_generation_test():
             conversation_history=conversation_history,
         )
         print(bot_response)
+
+def run_dialogue_management_fallback_test():
+    states = ["0", "A", "D", "AB", "AD", "C", "BD", "CD", "E", "F", "G", "H"]
+    for current_dialogue_state in states: 
+        new_state, action, final_state = dialogue_management_inst.run_fallback(
+            current_dialogue_state=current_dialogue_state
+        )
+        print(f"New State: {new_state}")
+        print(f"Action: {action}")
+        print(f"Final State: {final_state}")
+
+def run_slot_filling_fallback_test():
+    user_text_1 = "Ich habe eine Bestellung bei euch gemacht, aber es ist nicht alles angekommen."
+    user_text_2 = "Der Pullover ist nicht geliefert worden. Meine Bestellnummer ist 2246. Könnt Ihr mir den Preis bitte erstatten?"
+    user_text_3 = "Meine Bestellung ist nicht angekommen."
+    user_text_4 = "Der bestellte Pullover ist nicht angekommen."
+    user_text_5 = "Ich habe bei euch einen Pullover und eine Hose bestellt. Allerdings hat der Pulli im Paket gefehlt. Was kann ich machen?"
+    user_text_6 = "Es fehlt der Pullover in der Lieferung, während die Hose angekommen ist."
+    current_dialogue_state = "0"
+    newly_filled_slots = slot_filling_inst.run_fallback(
+        user_text=user_text_6,
+        current_dialogue_state=current_dialogue_state
+    )
+    print(newly_filled_slots)
+
+def run_response_generation_fallback_test():
+    rg_action = "BD_wrong_number"
+    treatment_group = 0
+    canned_response = response_generation_inst.run_fallback(rg_action, treatment_group)
+    print(canned_response)
 
 
 if __name__ == "__main__":
