@@ -1,4 +1,4 @@
 {
   "treatment_group_fallback": 1,
-  "use_cosmos_db_storage": false
+  "use_cosmos_db_storage": true
 }
