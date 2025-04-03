@@ -3,8 +3,8 @@
     "a": {
       "slot_id": "a",
       "slot_name": "Description of the request",
-      "description": "The user has described (directly or indirectly) that her request is an order or that there was a problem with the delivery of their order.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) beschrieben, dass sein Anliegen eine Bestellung ist bzw. es ein Problem bei der Lieferung seiner Bestellung gab.",
+      "description": "The user has described that her request is an order or that there was a problem with the delivery of their order.",
+      "prompt_description": "Der Nutzer hat beschrieben, dass sein Anliegen eine Bestellung ist bzw. dass es ein Problem bei der Lieferung seiner Bestellung gab.",
       "slot_patterns": [
         "\\bbestell(?:ung|t|t?e|auf)\\b",
         "\\bliefer(?:ung|problem|)\\b",
@@ -15,8 +15,8 @@
     "b": {
       "slot_id": "b",
       "slot_name": "Rough problem description",
-      "description": "The user has indicated (directly or indirectly) that an item from their order was missing from the delivery.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat (bzw. dass die Bestellung nicht angekommen ist).",
+      "description": "The user has indicated that an item from their order was missing from the delivery.",
+      "prompt_description": "Der Nutzer hat mitgeteilt, dass bei der Lieferung ein Artikel aus seiner Bestellung gefehlt hat (bzw. dass die Bestellung nicht vollständig geliefert wurde).",
       "slot_patterns": [
         "(bestell|liefer)\\s+(?:\\S+\\s+){0,10}(nicht\\s+angekommen|nicht\\s+erhalten)",
         "\\b(fehl|nicht)\\w*\\b.*\\b(liefer|bestell|paket)\\b",
@@ -29,8 +29,8 @@
     "c": {
       "slot_id": "c",
       "slot_name": "Detailed problem description",
-      "description": "The user has indicated (directly or indirectly) which item was missing from the delivery.",
-      "prompt_description": "Der Nutzer hat (direkt oder indirekt) mitgeteilt, welcher Artikel bei der Lieferung gefehlt hat (bzw. welcher Artikel nicht angekommen ist).",
+      "description": "The user has indicated which item was missing from the delivery.",
+      "prompt_description": "Der Nutzer hat mitgeteilt, welcher Artikel bei der Lieferung gefehlt hat (bzw. welcher Artikel nicht angekommen ist).",
       "validation_slot": "c_val",
       "slot_patterns": [
         "\\bfehlt(e|en)?\\s+(?:der|die|das|den|ein(en|e|es)?\\s+)?\\S+",

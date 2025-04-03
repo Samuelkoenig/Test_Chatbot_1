@@ -12,10 +12,75 @@ from aiohttp.web import Request, Response, json_response
 from botbuilder.core import (BotFrameworkAdapterSettings, TurnContext, BotFrameworkAdapter, ConversationState, MemoryStorage)
 from botbuilder.core.integration import aiohttp_error_middleware
 from botbuilder.schema import Activity, ActivityTypes
+
+import asyncio
+from typing import Dict
+from azure.cosmos.exceptions import CosmosAccessConditionFailedError
 from botbuilder.azure import CosmosDbPartitionedStorage, CosmosDbPartitionedConfig
 
 from bot.bot import Bot
 from config import DefaultConfig
+
+
+class RetryCosmosDbPartitionedStorage(CosmosDbPartitionedStorage):
+    """
+    Extension of the Botbuilder Storage, which undertakes automatic retries 
+    at PreconditionFailed errors with the database. 
+    """
+
+    def __init__(
+        self,
+        config: CosmosDbPartitionedConfig,
+        max_retries: int = 3,
+        retry_delay: float = 0.5
+    ):
+        """
+        Constructor of the RetryCosmosDbPartitionedStorage class. Inherits from
+        the CosmosDbPartitionedStorage class.
+
+        Args: 
+            config (CosmosDbPartitionedConfig): The config class instance for 
+            the cosmos db database.
+            max_retries (int): The maximum number of retries when an error 
+            with the internal database occurs.
+            retry_delay (float): The delay before a new retry of the database
+            operation.
+        """
+
+        super().__init__(config)
+        self.max_retries = max_retries 
+        self.retry_delay = retry_delay 
+
+    async def write(self, changes: Dict[str, object]):
+        """
+        Overwrites the write method of the parent class 
+        CosmosDbPartitionedStorage to retry failed database operations.
+
+        This method attempts to write a set of changes to the Cosmos DB
+        partitioned storage. If a write operation fails due to a 
+        PreconditionFailed (i.e., a concurrency conflict), it will 
+        automatically retry the operation up to the maximum number of retries 
+        specified in the constructor.
+
+        Args: 
+            changes (Dict[str, object]): A dictionary of key-value pairs 
+            representing items to be written to the storage. 
+        """
+        
+        attempt = 0
+        while True:
+            try:
+                # Invoke the orignial implementation from 
+                # CosmosDbPartitionedStorage
+                return await super().write(changes)
+            except CosmosAccessConditionFailedError as e:
+                attempt += 1
+                if attempt >= self.max_retries:
+                    # If all retries are exhausted, pass on the error
+                    raise e
+                # Wait a short time an try the databse operation again
+                await asyncio.sleep(self.retry_delay)
+
 
 #logging.basicConfig(level=logging.DEBUG)  //TODO: Zum debuggen entkommentieren
 #logger = logging.getLogger(__name__)  //TODO: Zum debuggen entkommentieren
@@ -45,10 +110,6 @@ async def on_error(context: TurnContext, error: Exception):
     logging.error(f"Unhandled error: {error}")
     print(f"\n [on_turn_error] unhandled error: {error}", file=sys.stderr)
     traceback.print_exc()
-    await context.send_activity("The bot encountered an error or bug.")
-    await context.send_activity(
-        "To continue to run this bot, please fix the bot source code."
-    )
     if context.activity.channel_id == "emulator":
         trace_activity = Activity(
             label="TurnError",
@@ -76,7 +137,11 @@ if use_cosmos_db_storage == True:
         container_id=container_id,
         container_throughput=None    # to make it compatible with the serverless cosmosdb. 
     )
-    storage = CosmosDbPartitionedStorage(cosmos_config)
+    storage = RetryCosmosDbPartitionedStorage(
+        config=cosmos_config,
+        max_retries=3,
+        retry_delay=0.5
+    )
     conversation_state = ConversationState(storage)
 else:
     memory = MemoryStorage()

@@ -6,9 +6,10 @@
 [Anleitung für das GPT-Modell]
 ---
 1. Lies die obigen letzten Nachrichten sorgfältig.
-2. Formuliere eine neutrale und professionelle Antwort, ohne spezielle empathische Wendungen.
+2. Formuliere eine neutrale und professionelle Antwort, ohne spezielle empathische Formulierungen.
 {user_prompt_content}
-3. Verfasse deine finale Antwort als Fließtext in einer empathischen, freundlichen und professionellen Weise.
+3. Verfasse deine finale Antwort als natürlich klingenden Fließtext in einer freundlichen und professionellen Weise. 
+4. Überarbeite deine finale Antwort, um sicherzustellen, dass sie konkret auf die Kundennachricht eingeht, flüssig und natürlich klingt und keine redundanten oder irrelevanten Informationen enthält. 
 
 Bitte gib NUR den finalen Nachrichtentext zurück. 
 ---
