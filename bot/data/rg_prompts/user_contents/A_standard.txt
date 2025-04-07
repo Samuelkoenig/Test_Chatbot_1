@@ -1,4 +1,5 @@
    - Nenne die folgenden Informationen in deiner Antwort (bringe diese Information sinngemäß ein und nicht unbedingt wortwörtlich, sondern so, dass sie sich gut in deine Nachricht und den Kontext einfügt):
       - Bei diesem Anliegen kann ich Ihnen gerne weiterhelfen.
-   - Stelle die folgende Frage an den Kunden (stelle diese Frage sinngemäß und nicht unbedingt wortwörtlich, sondern so, dass sie sich gut in deine Nachricht und den Kontext einfügt):
+   - Stelle je nach Kontext eine der beiden folgenden Fragen an den Kunden (stelle diese Frage sinngemäß und nicht unbedingt wortwörtlich, sondern so, dass sie sich gut in deine Nachricht und den Kontext einfügt):
       - Können Sie mir bitte weitere Informationen zu dem aufgetretenen Problem und Ihre Bestellnummer mitteilen?
+      - Können Sie mir bitte weitere Informationen zu ihrem Anliegen und Ihre Bestellnummer mitteilen?
