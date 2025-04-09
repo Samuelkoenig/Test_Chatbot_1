@@ -58,7 +58,7 @@
       "validation_slot": "d_val",
       "slot_patterns": [
         "\\b(?:bestellnummer|nummer|auftragsnummer)\\b(?:\\s+\\S+){0,20}?\\b\\d{1,10}\\b",
-        "\\b\\d{1,10}\\b"
+        "\\b\\d{3,10}\\b"
       ]
     },
     "d_val": {
@@ -88,7 +88,11 @@
       "slot_patterns": [
         "\\bja\\b",
         "\\bnein\\b",
-        "\\bkeine\\b\\s+(frage|wunsch|wünsche)"
+        "\\bkeine\\b\\s+(frage|wunsch|wünsche)",
+        "\\bin ordnung\\b",
+        "\\byes\\b",
+        "\\bpasst\\b",
+        "\\bokay\\b"
       ]
     },
     "h": {

@@ -33,11 +33,14 @@ class ResponseGeneration:
         Returns:
             OpenAI: The openai client instance.
         """
-
-        load_dotenv()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        openai_client = openai.OpenAI()
-        return openai_client
+        
+        try: 
+            load_dotenv()
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+            openai_client = openai.OpenAI()
+            return openai_client
+        except: 
+            return None
     
     def load_prompt_template(self, root_path: str, path_suffix_parts: list) -> str:
         """
