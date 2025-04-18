@@ -196,8 +196,8 @@ class ResponseGeneration:
 
         return rg_dev_prompt
     
-    def _call_gpt_api(self, developer_prompt: str, user_prompt: str, model: str = "gpt-4o-mini") -> str:
-        """
+    def _call_gpt_api(self, developer_prompt: str, user_prompt: str, model: str = "gpt-4o") -> str:
+        """ 
         Calls the gpt api.
         - Usees the developer prompt and the user_prompt strings.
         - Returns the api response.

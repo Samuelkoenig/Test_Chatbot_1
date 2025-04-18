@@ -261,7 +261,7 @@ class SlotFilling:
         output_example_as_string = json.dumps(output_example)
         return output_example_as_string
     
-    def _call_gpt_api(self, developer_prompt: str, user_prompt: str, model: str = "gpt-4o") -> str:
+    def _call_gpt_api(self, developer_prompt: str, user_prompt: str, model: str = "gpt-4.1") -> str:
         """
         Calls the gpt api.
         - Usees the developer prompt and the user_prompt strings.
