@@ -178,7 +178,12 @@ class Bot(ActivityHandler):
                 dialogue_state_history.append(initial_dialogue_state)
 
                 # Send welcome message
-                await turn_context.send_activity(welcome_text)
+                activity = Activity(
+                    type=ActivityTypes.message,
+                    text=welcome_text,
+                    channel_data={"dialogueState": initial_dialogue_state}
+                )
+                await turn_context.send_activity(activity)
                 
                 # Store updated conversation state variables
                 await self.conversation_history_accessor.set(turn_context, conversation_history)
@@ -234,7 +239,7 @@ class Bot(ActivityHandler):
         activity = Activity(
             type=ActivityTypes.message,
             text=bot_response,
-            channel_data={"finalState": final_state}
+            channel_data={"finalState": final_state, "dialogueState": new_dialogue_state}
         )
         await turn_context.send_activity(activity)
         print(f"User message: {user_text}\nChatbot response: {bot_response}\nNew State: {new_dialogue_state}\n\n\n")
