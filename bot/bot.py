@@ -155,7 +155,7 @@ class Bot(ActivityHandler):
             turn_context (TurnContext): The information about the current activity.
         """
 
-        # Retrieve welcome state
+        # Retrieve welcome state 
         welcome_sent = await self.welcome_state_accessor.get(turn_context, False)
 
         # Retrieve treatment_group value and set conversation state accordingly
