@@ -36,7 +36,7 @@ class Bot(ActivityHandler):
         self.conversation_history_accessor = self.conversation_state.create_property("ConversationHistory")
         self.dialogue_state_history_accessor = self.conversation_state.create_property("DialogueStateHistory")
         self.slot_filling_accessor = self.conversation_state.create_property("SlotFilling")
-        self.processed_messages_accessor = conversation_state.create_property("ProcessedMessages")
+        self.processed_messages_accessor = self.conversation_state.create_property("ProcessedMessages")
 
         self.dialogue_start = DialogueStart()
         self.message_processing = MessageProcessing()
