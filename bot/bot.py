@@ -173,7 +173,6 @@ class Bot(ActivityHandler):
         # store the message_key in the conversation_state and return False
         processed_messages.append(message_key)
         await self.processed_messages_accessor.set(turn_context, processed_messages)
-        await self.conversation_state.save_changes(turn_context)
         return False
     
     async def on_members_added_activity(self, members_added: ChannelAccount, turn_context: TurnContext):
@@ -247,15 +246,15 @@ class Bot(ActivityHandler):
             activity.
         """
 
+        # Check if the message is a duplicate; if this is the case, stop the function
+        if await self.is_duplicate_message(turn_context):
+            return
+
         # Retrieve conversation state variables
         treatment_group = await self.get_treatment_state(turn_context)
         conversation_history = await self.get_conversation_history(turn_context)
         dialogue_state_history = await self.get_dialogue_state_history(turn_context)
         slot_filling = await self.get_slot_filling(turn_context)
-
-        # Check if the message is a duplicate; if this is the case, stop the function
-        if await self.is_duplicate_message(turn_context):
-            return
 
         # Extract the user message
         user_text = turn_context.activity.text
