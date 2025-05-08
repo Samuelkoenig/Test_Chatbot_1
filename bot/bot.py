@@ -163,7 +163,9 @@ class Bot(ActivityHandler):
             return False
 
         # If message_key is contained in the processed message_keys: return True
-        processed_messages = await self.processed_messages_accessor.get(turn_context, [])
+        processed_messages = await self.processed_messages_accessor.get(turn_context)
+        if processed_messages is None:
+            processed_messages = []
         if message_key in processed_messages:
             return True
 
